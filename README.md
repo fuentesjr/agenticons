@@ -129,4 +129,4 @@ The validator parses every agent TOML file and checks that `README.md` and `SKIL
 
 ## License
 
-No license has been specified.
+GNU General Public License v3.0. See `LICENSE`.
