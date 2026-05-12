@@ -1,16 +1,16 @@
 ---
-name: codex-dispatch
+name: agenticons
 description: Selects and spawns named Codex custom subagents for planning, implementation, review, documentation review, and helper work. Use for tasks that need delegation, parallel execution, code changes, review, investigation, documentation drift checks, or model-tier routing.
 ---
 
-# Codex Dispatch
+# Agenticons
 
 Use this skill as a lean dispatcher. Your job is to select and spawn the right named custom subagent for the task, then consolidate results.
 
 ## Hard rules
 
 - Default to dispatching through subagents, unless the user explicitly opts out.
-- Honor escape hatches exactly. If the user says `no subagents`, `do not use subagents`, `handle locally`, `do this yourself`, or `do not use codex-dispatch`, do not spawn subagents for that request.
+- Honor escape hatches exactly. If the user says `no subagents`, `do not use subagents`, `handle locally`, `do this yourself`, or `do not use agenticons`, do not spawn subagents for that request.
 - Dispatch to named subagents. Do not merely recommend models.
 - Use the exact subagent names from `.codex/agents/*.toml`:
   - `planner`

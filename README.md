@@ -1,10 +1,10 @@
-# Codex Dispatch Package
+# Agenticons
 
-A lean Codex dispatch package that selects and spawns the right named custom subagent for each task.
+A lean Codex agent package that selects and spawns the right named custom subagent for each task.
 
 It includes:
 
-- `SKILL.md` — dispatch skill instructions
+- `SKILL.md` — agent routing skill instructions
 - `.codex/agents/planner.toml`
 - `.codex/agents/reviewer.toml`
 - `.codex/agents/doc_reviewer.toml`
@@ -12,7 +12,9 @@ It includes:
 - `.codex/agents/fast_coding_worker.toml`
 - `.codex/agents/helper_worker.toml`
 - `.codex/agents/premium_reviewer.toml`
-- `scripts/validate_package.py`
+- `scripts/validate_package.go`
+- `go.mod`
+- `go.sum`
 - `.github/workflows/validate.yml`
 
 ## What this package does
@@ -39,7 +41,7 @@ Expected layout:
 your-repo/
   .agents/
     skills/
-      codex-dispatch/
+      agenticons/
         SKILL.md
   .codex/
     agents/
@@ -57,11 +59,13 @@ Do not copy this package's `README.md` over the target repository's README. Keep
 If you only want to try the package from this source tree, this repository already has the expected package source layout:
 
 ```text
-codex-dispatch-package/
+agenticons/
   SKILL.md
   README.md
+  go.mod
+  go.sum
   scripts/
-    validate_package.py
+    validate_package.go
   .github/
     workflows/
       validate.yml
@@ -76,7 +80,7 @@ codex-dispatch-package/
       premium_reviewer.toml
 ```
 
-When installing into another repository, copy this package's `SKILL.md` to `.agents/skills/codex-dispatch/SKILL.md`, then copy `.codex/agents/*.toml` to the target repository's `.codex/agents/`.
+When installing into another repository, copy this package's `SKILL.md` to `.agents/skills/agenticons/SKILL.md`, then copy `.codex/agents/*.toml` to the target repository's `.codex/agents/`.
 
 ## Escape hatch
 
@@ -87,7 +91,7 @@ no subagents
 do not use subagents
 handle locally
 do this yourself
-do not use codex-dispatch
+do not use agenticons
 ```
 
 When an escape hatch is present, the parent agent should handle the request directly.
@@ -107,7 +111,7 @@ max_depth = 1
 ### 1. Plan a complex feature, then implement and review
 
 ```text
-Use codex-dispatch.
+Use agenticons.
 
 Build tenant-level API keys with creation, rotation, revocation, and audit logging.
 
@@ -125,7 +129,7 @@ planner -> coding_worker -> reviewer
 ### 2. Small bug fix
 
 ```text
-Use codex-dispatch.
+Use agenticons.
 
 Fix the failing validation around blank display names.
 This should be a small localized change. Spawn the right worker and include test evidence.
@@ -141,7 +145,7 @@ optional reviewer if behavior changed
 ### 3. Unknown failure path
 
 ```text
-Use codex-dispatch.
+Use agenticons.
 
 The checkout flow sometimes double-charges in staging.
 Do not edit code yet. Spawn a helper to trace the likely code path and identify evidence.
@@ -157,7 +161,7 @@ helper_worker -> coding_worker -> reviewer
 ### 4. Standard PR review
 
 ```text
-Use codex-dispatch.
+Use agenticons.
 
 Review this branch against main for correctness, security, regressions, and missing tests.
 Use the standard review agent.
@@ -172,7 +176,7 @@ reviewer
 ### 5. High-stakes review
 
 ```text
-Use codex-dispatch.
+Use agenticons.
 
 Review the auth/session migration before release.
 This affects login, session invalidation, and production user access.
@@ -190,7 +194,7 @@ Use `premium_reviewer` sparingly. It is for security boundaries, auth/session lo
 ### 6. Documentation drift review
 
 ```text
-Use codex-dispatch.
+Use agenticons.
 
 Review this branch for documentation drift. Check README, setup steps, CLI examples,
 configuration, API docs, and release notes against the implementation changes.
@@ -205,7 +209,7 @@ doc_reviewer
 ### 7. Parallel focused review
 
 ```text
-Use codex-dispatch.
+Use agenticons.
 
 Review this PR in parallel:
 1. correctness and edge cases
@@ -240,10 +244,10 @@ When dispatching implementation work to more than one writable agent, assign dis
 Run the package validation before publishing changes:
 
 ```bash
-python3 scripts/validate_package.py
+go run ./scripts/validate_package.go
 ```
 
-The validator parses every agent TOML file and checks that `README.md` and `SKILL.md` mention every configured agent, which helps catch documentation drift.
+The validator parses every agent TOML file and checks that `README.md` and `SKILL.md` mention every configured agent, which helps catch documentation drift. The Go implementation is intentionally documented because it is part of the package maintenance contract, not a throwaway CI snippet.
 
 ## Notes
 
