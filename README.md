@@ -7,10 +7,13 @@ It includes:
 - `SKILL.md` — dispatch skill instructions
 - `.codex/agents/planner.toml`
 - `.codex/agents/reviewer.toml`
+- `.codex/agents/doc_reviewer.toml`
 - `.codex/agents/coding_worker.toml`
 - `.codex/agents/fast_coding_worker.toml`
 - `.codex/agents/helper_worker.toml`
 - `.codex/agents/premium_reviewer.toml`
+- `scripts/validate_package.py`
+- `.github/workflows/validate.yml`
 
 ## What this package does
 
@@ -20,6 +23,7 @@ This package turns Codex into a small dispatcher/coordinator. The parent agent s
 |---|---:|---|
 | `planner` | `gpt-5.5` | Architecture, decomposition, sequencing, risk analysis |
 | `reviewer` | `gpt-5.5` | Standard code review |
+| `doc_reviewer` | `gpt-5.4-mini` | Documentation correctness, stale docs, doc drift |
 | `coding_worker` | `gpt-5.3-codex` | Normal implementation, bug fixes, refactors |
 | `fast_coding_worker` | `gpt-5.3-codex-spark` | Small localized edits and quick fixes |
 | `helper_worker` | `gpt-5.4-mini` | Read-only investigation, lookup, repo reconnaissance, docs/API help |
@@ -27,25 +31,9 @@ This package turns Codex into a small dispatcher/coordinator. The parent agent s
 
 ## Installation
 
-Copy the package contents into your repo root.
+Install the skill under a namespaced repository skill directory, and keep the custom agent specs at the repo root so Codex can load them.
 
 Expected layout:
-
-```text
-your-repo/
-  SKILL.md
-  README.md
-  .codex/
-    agents/
-      planner.toml
-      reviewer.toml
-      coding_worker.toml
-      fast_coding_worker.toml
-      helper_worker.toml
-      premium_reviewer.toml
-```
-
-If you want this as a Codex repo skill, place `SKILL.md` under your repository skill location instead, for example:
 
 ```text
 your-repo/
@@ -53,9 +41,56 @@ your-repo/
     skills/
       codex-dispatch/
         SKILL.md
+  .codex/
+    agents/
+      planner.toml
+      reviewer.toml
+      doc_reviewer.toml
+      coding_worker.toml
+      fast_coding_worker.toml
+      helper_worker.toml
+      premium_reviewer.toml
 ```
 
-Keep `.codex/agents/*.toml` at the repo root so Codex can load the project-scoped custom agents.
+Do not copy this package's `README.md` over the target repository's README. Keep this README with the package source, or copy its relevant sections into your own project docs intentionally.
+
+If you only want to try the package from this source tree, this repository already has the expected package source layout:
+
+```text
+codex-dispatch-package/
+  SKILL.md
+  README.md
+  scripts/
+    validate_package.py
+  .github/
+    workflows/
+      validate.yml
+  .codex/
+    agents/
+      planner.toml
+      reviewer.toml
+      doc_reviewer.toml
+      coding_worker.toml
+      fast_coding_worker.toml
+      helper_worker.toml
+      premium_reviewer.toml
+```
+
+When installing into another repository, copy this package's `SKILL.md` to `.agents/skills/codex-dispatch/SKILL.md`, then copy `.codex/agents/*.toml` to the target repository's `.codex/agents/`.
+
+## Escape hatch
+
+This package is designed to dispatch by default. To bypass dispatch for a request, say one of:
+
+```text
+no subagents
+do not use subagents
+handle locally
+do this yourself
+do not use codex-dispatch
+```
+
+When an escape hatch is present, the parent agent should handle the request directly.
 
 ## Recommended optional config
 
@@ -152,7 +187,22 @@ premium_reviewer
 
 Use `premium_reviewer` sparingly. It is for security boundaries, auth/session logic, payments, data loss risk, production migrations, irreversible changes, and expensive operational decisions.
 
-### 6. Parallel focused review
+### 6. Documentation drift review
+
+```text
+Use codex-dispatch.
+
+Review this branch for documentation drift. Check README, setup steps, CLI examples,
+configuration, API docs, and release notes against the implementation changes.
+```
+
+Expected routing:
+
+```text
+doc_reviewer
+```
+
+### 7. Parallel focused review
 
 ```text
 Use codex-dispatch.
@@ -179,8 +229,21 @@ Default to the cheapest capable subagent that preserves quality:
 2. `fast_coding_worker` for small localized edits.
 3. `coding_worker` for normal implementation.
 4. `planner` when sequencing, architecture, or risk is the main problem.
-5. `reviewer` for ordinary review.
-6. `premium_reviewer` only for rare high-stakes review.
+5. `doc_reviewer` for documentation drift and docs completeness review.
+6. `reviewer` for ordinary review.
+7. `premium_reviewer` only for rare high-stakes review.
+
+When dispatching implementation work to more than one writable agent, assign disjoint file or feature ownership. Each worker should avoid reverting user edits or changes from other agents and should stop if its scope overlaps unexpectedly.
+
+## Validation
+
+Run the package validation before publishing changes:
+
+```bash
+python3 scripts/validate_package.py
+```
+
+The validator parses every agent TOML file and checks that `README.md` and `SKILL.md` mention every configured agent, which helps catch documentation drift.
 
 ## Notes
 
