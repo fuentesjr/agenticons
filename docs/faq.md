@@ -22,7 +22,7 @@ do not use agenticons
 
 ## Where do the files go?
 
-Run:
+For repo-local installation, run:
 
 ```bash
 ./scripts/install.sh --target /path/to/your-repo
@@ -30,12 +30,21 @@ Run:
 
 The installer copies `SKILL.md` to `.agents/skills/agenticons/SKILL.md` and `.codex/agents/*.toml` to `.codex/agents/` in the target repository.
 
+For global installation, run:
+
+```bash
+./scripts/install.sh --global
+```
+
+The installer copies `SKILL.md` to `~/.agents/skills/agenticons/SKILL.md` and `.codex/agents/*.toml` to `~/.codex/agents/` for the current user.
+
 ## Can I install directly from GitHub?
 
 Yes:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/fuentesjr/agenticons/main/scripts/install.sh | sh -s -- --target /path/to/your-repo
+curl -fsSL https://raw.githubusercontent.com/fuentesjr/agenticons/main/scripts/install.sh | sh -s -- --global
 ```
 
 Remote install uses `curl` or `wget` to fetch package files from GitHub.
@@ -46,12 +55,14 @@ The installer is idempotent when existing files match. If an existing file diffe
 
 ```bash
 ./scripts/install.sh --target /path/to/your-repo --force
+./scripts/install.sh --global --force
 ```
 
 Preview writes with:
 
 ```bash
 ./scripts/install.sh --target /path/to/your-repo --dry-run
+./scripts/install.sh --global --dry-run
 ```
 
 ## Which agent should I ask for?

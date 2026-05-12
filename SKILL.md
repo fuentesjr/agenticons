@@ -12,7 +12,7 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
 - Dispatch through subagents only when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing.
 - Honor escape hatches exactly. If the user says `no subagents`, `do not use subagents`, `handle locally`, `do this yourself`, or `do not use agenticons`, do not spawn subagents for that request.
 - Dispatch to named subagents. Do not merely recommend models.
-- Use the exact subagent names from `.codex/agents/*.toml`:
+- Use the exact subagent names from the installed Agenticons specs (`.codex/agents/*.toml` for repo-local installs or `~/.codex/agents/*.toml` for global installs):
   - `planner`
   - `coding_worker`
   - `fast_coding_worker`

@@ -15,17 +15,28 @@ Use the standard review agent.
 
 ## Install
 
+Install into one repository:
+
 ```bash
 ./scripts/install.sh --target /path/to/your-repo
 ```
 
+Or install globally for the current user so Agenticons is available from any repository:
+
+```bash
+./scripts/install.sh --global
+```
+
+Directly from GitHub:
+
 ```bash
 curl -fsSL https://raw.githubusercontent.com/fuentesjr/agenticons/main/scripts/install.sh | sh -s -- --target /path/to/your-repo
+curl -fsSL https://raw.githubusercontent.com/fuentesjr/agenticons/main/scripts/install.sh | sh -s -- --global
 ```
 
 ## Quick Start
 
-Paste this into Codex from the target repository after installation:
+Paste this into Codex from the target repository after repo-local installation, or from any repository after global installation:
 
 ```text
 Use agenticons.
@@ -117,8 +128,8 @@ max_depth = 1
 | Shell | POSIX `sh` for installation |
 | Remote install | `curl` or `wget` |
 | Go | 1.22 or newer, for validation and tests |
-| Installed skill path | `.agents/skills/agenticons/SKILL.md` |
-| Installed agent path | `.codex/agents/*.toml` |
+| Installed skill path | Repo-local: `.agents/skills/agenticons/SKILL.md`; global: `~/.agents/skills/agenticons/SKILL.md` |
+| Installed agent path | Repo-local: `.codex/agents/*.toml`; global: `~/.codex/agents/*.toml` |
 
 ## Contributing / Development
 

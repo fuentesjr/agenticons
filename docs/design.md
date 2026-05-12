@@ -34,7 +34,7 @@ agenticons/
     validate_package.go
 ```
 
-The package installs into a target repository with `scripts/install.sh`. The installer places `SKILL.md` under `.agents/skills/agenticons/` and agent specs under `.codex/agents/`.
+The package installs into a target repository or into the current user's global Codex locations with `scripts/install.sh`. Repo-local installation places `SKILL.md` under `.agents/skills/agenticons/` and agent specs under `.codex/agents/`. Global installation places them under `~/.agents/skills/agenticons/` and `~/.codex/agents/`.
 
 ## Dispatch Contract
 
@@ -116,6 +116,7 @@ go vet ./...
 `scripts/install.sh` is the primary distribution path. It supports:
 
 - `--target <repo>` to choose the repository to install into
+- `--global` to install for the current user under `~/.agents` and `~/.codex`
 - `--dry-run` to preview writes
 - `--force` to overwrite differing files
 - `--ref <git-ref>` for remote installs from a specific Git ref
