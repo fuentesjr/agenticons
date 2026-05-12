@@ -22,7 +22,8 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
   - `premium_reviewer`
 - Standard review always uses `reviewer`.
 - Documentation drift review uses `doc_reviewer`.
-- Use `premium_reviewer` only for rare, very high-stakes/high-cost review.
+- Never spawn `premium_reviewer` unless the user explicitly asks for `premium_reviewer` or premium review in the current request. High-stakes context alone is not enough.
+- If the user asks to use premium review only if needed, spawn `reviewer` first and ask it to say whether premium review is justified.
 - Keep orchestration shallow: parent coordinates; subagents do focused work.
 - Avoid recursive delegation unless the user explicitly asks for it.
 - Prefer one subagent for simple work, two to four subagents for parallel review or independent implementation slices.
@@ -41,7 +42,7 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
 | Read-only lookup, repo reconnaissance, dependency/API check, test triage, docs/help task | `helper_worker` |
 | Documentation correctness, stale docs, README/API drift, changelog/release-note coverage | `doc_reviewer` |
 | Normal correctness/security/maintainability review | `reviewer` |
-| Rare high-stakes review: security boundary, data loss, payments, auth, migration, production incident, irreversible or expensive decision | `premium_reviewer` |
+| Explicitly requested premium review for a rare high-stakes case: security boundary, data loss, payments, auth, migration, production incident, irreversible or expensive decision | `premium_reviewer` |
 
 ## Dispatch patterns
 
@@ -63,7 +64,7 @@ Spawn one or more `reviewer` agents with separate review angles only when useful
 - security and permissions
 - tests and regressions
 
-Use `premium_reviewer` instead of `reviewer` only when the change is genuinely high-stakes.
+Use `reviewer` for normal review, including security-sensitive review. If the user explicitly asks for premium review in the current request, use `premium_reviewer` only for rare high-stakes cases. If the user asks for premium only if needed, use `reviewer` first and report whether escalation is justified.
 
 ### Documentation drift review
 
