@@ -22,7 +22,37 @@ do not use agenticons
 
 ## Where do the files go?
 
-Copy `SKILL.md` to `.agents/skills/agenticons/SKILL.md` in the target repository. Copy `.codex/agents/*.toml` to `.codex/agents/` in the target repository.
+Run:
+
+```bash
+./scripts/install.sh --target /path/to/your-repo
+```
+
+The installer copies `SKILL.md` to `.agents/skills/agenticons/SKILL.md` and `.codex/agents/*.toml` to `.codex/agents/` in the target repository.
+
+## Can I install directly from GitHub?
+
+Yes:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/fuentesjr/agenticons/main/scripts/install.sh | sh -s -- --target /path/to/your-repo
+```
+
+Remote install uses `curl` or `wget` to fetch package files from GitHub.
+
+## What if files already exist?
+
+The installer is idempotent when existing files match. If an existing file differs, the installer stops unless you pass `--force`.
+
+```bash
+./scripts/install.sh --target /path/to/your-repo --force
+```
+
+Preview writes with:
+
+```bash
+./scripts/install.sh --target /path/to/your-repo --dry-run
+```
 
 ## Which agent should I ask for?
 
@@ -75,4 +105,3 @@ The validator checks that every agent TOML file is parseable, required fields ar
 ## Why is my new agent failing validation?
 
 Check that the TOML file has all required fields, the `name` matches the filename, the sandbox mode is `read-only` or `workspace-write`, and both `README.md` and `SKILL.md` mention the new agent.
-

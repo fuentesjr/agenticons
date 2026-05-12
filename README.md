@@ -16,10 +16,11 @@ Use the standard review agent.
 ## Install
 
 ```bash
-TARGET_REPO=/path/to/your-repo
-mkdir -p "$TARGET_REPO/.agents/skills/agenticons" "$TARGET_REPO/.codex/agents"
-cp SKILL.md "$TARGET_REPO/.agents/skills/agenticons/SKILL.md"
-cp .codex/agents/*.toml "$TARGET_REPO/.codex/agents/"
+./scripts/install.sh --target /path/to/your-repo
+```
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/fuentesjr/agenticons/main/scripts/install.sh | sh -s -- --target /path/to/your-repo
 ```
 
 ## Quick Start
@@ -113,6 +114,8 @@ max_depth = 1
 | Requirement | Version or value |
 |---|---|
 | Codex | Custom skills and custom subagents enabled |
+| Shell | POSIX `sh` for installation |
+| Remote install | `curl` or `wget` |
 | Go | 1.22 or newer, for validation and tests |
 | Installed skill path | `.agents/skills/agenticons/SKILL.md` |
 | Installed agent path | `.codex/agents/*.toml` |

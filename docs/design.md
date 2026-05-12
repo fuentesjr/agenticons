@@ -30,10 +30,11 @@ agenticons/
       reviewer.toml
       premium_reviewer.toml
   scripts/
+    install.sh
     validate_package.go
 ```
 
-The package installs into a target repository with `SKILL.md` under `.agents/skills/agenticons/` and agent specs under `.codex/agents/`.
+The package installs into a target repository with `scripts/install.sh`. The installer places `SKILL.md` under `.agents/skills/agenticons/` and agent specs under `.codex/agents/`.
 
 ## Dispatch Contract
 
@@ -109,6 +110,17 @@ go run ./scripts/validate_package.go
 go test ./...
 go vet ./...
 ```
+
+## Installation Script
+
+`scripts/install.sh` is the primary distribution path. It supports:
+
+- `--target <repo>` to choose the repository to install into
+- `--dry-run` to preview writes
+- `--force` to overwrite differing files
+- `--ref <git-ref>` for remote installs from a specific Git ref
+
+The script works from a local checkout. It also works through a raw GitHub pipe, where it downloads `SKILL.md` and `.codex/agents/*.toml` from the selected ref.
 
 ## Change Policy
 
