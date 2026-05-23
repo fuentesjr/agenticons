@@ -56,7 +56,9 @@ reviewer
 
 Agenticons dispatches only when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing. If a request says `no subagents`, `do not use subagents`, `handle locally`, `do this yourself`, or `do not use agenticons`, the parent agent should handle it directly.
 
-Standard review always routes to `reviewer`. High-stakes context can justify recommending premium escalation, but it does not by itself spawn `premium_reviewer`. To use the expensive premium role, explicitly ask for `premium_reviewer` or premium review in the current request. If a request says to use premium review only if needed, Agenticons should run `reviewer` first and have it report whether premium review is justified.
+Model routing is fixed by the installed Agenticons agent specs. Spawn each role with the model listed in its `.codex/agents/*.toml` file and in the table below; do not substitute unlisted models or providers at dispatch time.
+
+Standard review always routes to `reviewer`, including security-sensitive and high-stakes review requests.
 
 | Subagent | Agent file | Model | Use |
 |---|---|---:|---|
@@ -66,7 +68,6 @@ Standard review always routes to `reviewer`. High-stakes context can justify rec
 | `helper_worker` | `.codex/agents/helper_worker.toml` | `gpt-5.4-mini` | Read-only investigation, lookup, repo reconnaissance, docs/API help |
 | `doc_reviewer` | `.codex/agents/doc_reviewer.toml` | `gpt-5.4-mini` | Documentation correctness, stale docs, doc drift |
 | `reviewer` | `.codex/agents/reviewer.toml` | `gpt-5.5` | Standard code review |
-| `premium_reviewer` | `.codex/agents/premium_reviewer.toml` | `gpt-5.5-pro` | Explicitly requested rare high-stakes/high-cost review only |
 
 Plan, implement, and review:
 
@@ -103,17 +104,7 @@ Run a high-stakes review:
 ```text
 Use agenticons.
 
-Review the auth/session migration before release.
-This affects login, session invalidation, and production user access.
-Use reviewer first and report whether premium review is justified.
-```
-
-Run an explicitly requested premium review:
-
-```text
-Use agenticons.
-
-Review the auth/session migration before release with premium_reviewer.
+Review the auth/session migration before release with reviewer.
 This affects login, session invalidation, and production user access.
 ```
 

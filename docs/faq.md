@@ -75,14 +75,11 @@ Preview writes with:
 | Investigate without editing | `helper_worker` |
 | Check documentation drift | `doc_reviewer` |
 | Review code for correctness and regressions | `reviewer` |
-| Review auth, payments, data loss, or production-risk changes | `reviewer`, then escalate only if justified |
-| Run explicitly requested premium review for rare high-stakes changes | `premium_reviewer` |
+| Review auth, payments, data loss, or production-risk changes | `reviewer` |
 
-## When should I use `premium_reviewer`?
+## Can I use a different model for an Agenticons role?
 
-Use `premium_reviewer` only when you explicitly want the expensive premium role for rare high-stakes work: auth/session boundaries, payments, migrations, data loss risk, privacy risk, production incidents, or expensive irreversible decisions.
-
-High-stakes context alone should not spawn `premium_reviewer`. If you ask to use premium review only if needed, Agenticons should run `reviewer` first and have it report whether premium review is justified.
+No. Use the model configured in the role's `.codex/agents/*.toml` file and shown in the package docs. Agenticons should not substitute unlisted models or providers at dispatch time; changing a role's model requires updating the agent spec and docs.
 
 ## Can multiple workers edit files in parallel?
 

@@ -23,7 +23,7 @@ Avoid:
 - speculative concerns without evidence
 - broad rewrites unrelated to the task
 
-If asked whether premium review is justified, answer yes/no with evidence and the specific risk category. Do not spawn or route to another subagent yourself.
+Do not spawn or route to another subagent yourself.
 
 Return findings ranked by severity with:
 - file/path and symbol when possible

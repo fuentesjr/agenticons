@@ -28,7 +28,6 @@ agenticons/
       helper_worker.toml
       doc_reviewer.toml
       reviewer.toml
-      premium_reviewer.toml
   scripts/
     install.sh
     validate_package.go
@@ -42,7 +41,7 @@ Dispatch is opt-in. The skill should activate when the user explicitly asks for 
 
 Escape hatches take precedence. If the user says `no subagents`, `do not use subagents`, `handle locally`, `do this yourself`, or `do not use agenticons`, the parent agent handles the task directly.
 
-Premium review is explicit opt-in. The parent agent must not spawn `premium_reviewer` unless the user asks for `premium_reviewer` or premium review in the current request. High-stakes context can justify recommending premium escalation, but it is not enough to spawn the expensive role. If the user asks for premium review only if needed, the parent should run `reviewer` first and have it report whether premium review is justified.
+Model routing is part of the package contract. The parent agent must use only the model identifiers configured in `.codex/agents/*.toml` and documented in the Agent Roles table; it must not override a role to an unlisted model or provider at dispatch time. Model changes should happen by updating the relevant agent spec and docs.
 
 The parent agent remains responsible for:
 
@@ -62,7 +61,6 @@ The parent agent remains responsible for:
 | `helper_worker` | `read-only` | `gpt-5.4-mini` | Investigation, lookup, repo reconnaissance, evidence gathering |
 | `doc_reviewer` | `read-only` | `gpt-5.4-mini` | Documentation correctness and drift review |
 | `reviewer` | `read-only` | `gpt-5.5` | Standard correctness, security, maintainability, regression review |
-| `premium_reviewer` | `read-only` | `gpt-5.5-pro` | Explicitly requested rare high-stakes review for security, data, payments, migrations, and production risk |
 
 ## Agent Spec Contract
 
@@ -88,8 +86,7 @@ Common patterns:
 - Fast fix: `fast_coding_worker`, with `reviewer` when behavior or public API changes
 - Investigation before editing: `helper_worker` -> `coding_worker` or `fast_coding_worker`
 - Documentation drift review: `doc_reviewer`
-- High-stakes review: `reviewer`, with a premium escalation recommendation when justified
-- Explicit premium review: `premium_reviewer`
+- High-stakes or security-sensitive review: `reviewer`
 
 Parallel writable work should use disjoint ownership. Parallel review work should use distinct review angles such as correctness, security, and regression risk.
 
