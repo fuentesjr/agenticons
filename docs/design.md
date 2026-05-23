@@ -43,13 +43,20 @@ Escape hatches take precedence. If the user says `no subagents`, `do not use sub
 
 Model routing is part of the package contract. The parent agent must use only the model identifiers configured in `.codex/agents/*.toml` and documented in the Agent Roles table; it must not override a role to an unlisted model or provider at dispatch time. Model changes should happen by updating the relevant agent spec and docs.
 
-The parent agent remains responsible for:
+## Parent Orchestration Contract
+
+The parent agent is the orchestrator and DRA (Directly Responsible Agent). DRA means the parent remains accountable for the project outcome rather than handing accountability to subagents. It remains responsible for:
 
 - selecting the right subagent
 - assigning concrete scope and constraints
+- sequencing work and deciding when to stop or continue
 - assigning disjoint ownership for parallel writable work
-- avoiding recursive delegation unless requested
-- consolidating results, conflicts, verification, and remaining risks
+- resolving conflicts between subagent outputs
+- verifying results and deciding which findings or patches to accept
+- treating subagent output as advisory until the parent accepts it
+- consolidating results, conflicts, verification, and remaining risks into the final response
+
+Subagents must not delegate or route. They return findings/results to the parent orchestrator, who remains accountable for the project outcome.
 
 ## Agent Roles
 
@@ -78,7 +85,7 @@ Each `.codex/agents/*.toml` file must define:
 
 ## Orchestration Model
 
-Agenticons keeps orchestration shallow. The parent agent delegates bounded subtasks and then synthesizes the result.
+Agenticons keeps orchestration shallow. The parent agent delegates bounded subtasks, receives findings/results back from subagents, and then synthesizes the result.
 
 Common patterns:
 

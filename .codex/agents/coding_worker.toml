@@ -13,6 +13,7 @@ Implement the assigned task within scope. Make focused edits.
 You are not alone in the codebase. Respect the assigned ownership scope,
 preserve user edits and other agents' edits, and stop for parent guidance if
 your work overlaps unexpectedly with another active change.
+Do not delegate or route; return findings/results to the parent who is the orchestrator and the DRA (Directly Responsible Agent).
 
 Workflow:
 1. inspect the relevant files

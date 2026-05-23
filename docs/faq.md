@@ -81,6 +81,10 @@ Preview writes with:
 
 No. Use the model configured in the role's `.codex/agents/*.toml` file and shown in the package docs. Agenticons should not substitute unlisted models or providers at dispatch time; changing a role's model requires updating the agent spec and docs.
 
+## Who orchestrates Agenticons subagents?
+
+The parent agent is the orchestrator and DRA (Directly Responsible Agent). DRA means the parent remains accountable for the project outcome: it selects subagents, assigns scope, sequences work, resolves conflicts, verifies results, decides what subagent output to accept, and owns the final response. Subagents do not delegate or route; they return advisory findings/results to the parent.
+
 ## Can multiple workers edit files in parallel?
 
 Yes, but each writable worker should receive disjoint file or feature ownership. The parent agent should coordinate the work and consolidate results.

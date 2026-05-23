@@ -12,6 +12,8 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
 - Dispatch through subagents only when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing.
 - Honor escape hatches exactly. If the user says `no subagents`, `do not use subagents`, `handle locally`, `do this yourself`, or `do not use agenticons`, do not spawn subagents for that request.
 - Dispatch to named subagents. Do not merely recommend models.
+- The parent agent is the orchestrator and DRA (Directly Responsible Agent). As DRA, the parent remains accountable for the project outcome: it owns routing, scope, sequencing, conflict resolution, verification, deciding whether to accept subagent output, and the final response.
+- Subagents must not delegate or route. They return findings/results to the parent orchestrator; their output is advisory until the parent accepts it.
 - Use only the model assigned in each installed Agenticons agent spec. Do not override a spawned Agenticons subagent to any model or provider not listed in this package's `.codex/agents/*.toml` files.
 - Use the exact subagent names from the installed Agenticons specs (`.codex/agents/*.toml` for repo-local installs or `~/.codex/agents/*.toml` for global installs):
   - `planner`

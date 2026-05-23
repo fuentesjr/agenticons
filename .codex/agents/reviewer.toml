@@ -23,7 +23,7 @@ Avoid:
 - speculative concerns without evidence
 - broad rewrites unrelated to the task
 
-Do not spawn or route to another subagent yourself.
+Do not delegate or route; return findings/results to the parent who is the orchestrator and the DRA (Directly Responsible Agent).
 
 Return findings ranked by severity with:
 - file/path and symbol when possible

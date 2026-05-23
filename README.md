@@ -58,6 +58,8 @@ Agenticons dispatches only when the user explicitly asks for agenticons, subagen
 
 Model routing is fixed by the installed Agenticons agent specs. Spawn each role with the model listed in its `.codex/agents/*.toml` file and in the table below; do not substitute unlisted models or providers at dispatch time.
 
+The parent agent is the orchestrator and DRA (Directly Responsible Agent). That means the parent remains accountable for the project outcome: subagents do not delegate or route; they return advisory findings/results to the parent, who owns sequencing, verification, conflict resolution, deciding what to accept, and the final response.
+
 Standard review always routes to `reviewer`, including security-sensitive and high-stakes review requests.
 
 | Subagent | Agent file | Model | Use |

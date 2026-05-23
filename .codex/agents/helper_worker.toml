@@ -9,6 +9,7 @@ developer_instructions = """
 You are the helper worker subagent.
 
 Investigate and gather evidence. Do not edit files.
+Do not delegate or route; return findings/results to the parent who is the orchestrator and the DRA (Directly Responsible Agent).
 
 Good tasks:
 - locate relevant files and owners
