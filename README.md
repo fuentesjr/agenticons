@@ -67,7 +67,8 @@ Standard review always routes to `reviewer`, including security-sensitive and hi
 | `planner` | `.codex/agents/planner.toml` | `gpt-5.5` | Architecture, decomposition, sequencing, risk analysis |
 | `coding_worker` | `.codex/agents/coding_worker.toml` | `gpt-5.3-codex` | Normal implementation, bug fixes, refactors |
 | `fast_coding_worker` | `.codex/agents/fast_coding_worker.toml` | `gpt-5.3-codex-spark` | Small localized edits and quick fixes |
-| `helper_worker` | `.codex/agents/helper_worker.toml` | `gpt-5.4-mini` | Read-only investigation, lookup, repo reconnaissance, docs/API help |
+| `helper_worker` | `.codex/agents/helper_worker.toml` | `gpt-5.4-mini` | Read-only lookup, repo reconnaissance, docs/API lookup |
+| `forensic_analyst` | `.codex/agents/forensic_analyst.toml` | `gpt-5.5` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
 | `doc_reviewer` | `.codex/agents/doc_reviewer.toml` | `gpt-5.4-mini` | Documentation correctness, stale docs, doc drift |
 | `reviewer` | `.codex/agents/reviewer.toml` | `gpt-5.5` | Standard code review |
 
@@ -82,13 +83,14 @@ Then spawn coding_worker to implement the accepted plan.
 Then spawn reviewer for standard review.
 ```
 
-Investigate before editing:
+Investigate a hard failure before editing:
 
 ```text
 Use agenticons.
 
-The checkout flow sometimes double-charges in staging.
-Do not edit code yet. Spawn a helper to trace the likely code path and identify evidence.
+The checkout flow sometimes double-charges in staging and nobody knows why.
+Do not edit code yet. Spawn forensic_analyst to find the root cause and report.
+Save the accepted report to docs/forensics/double-charge.md.
 After that, decide whether to spawn coding_worker.
 ```
 

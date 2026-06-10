@@ -26,6 +26,7 @@ agenticons/
       coding_worker.toml
       fast_coding_worker.toml
       helper_worker.toml
+      forensic_analyst.toml
       doc_reviewer.toml
       reviewer.toml
   scripts/
@@ -65,7 +66,8 @@ Subagents must not delegate or route. They return findings/results to the parent
 | `planner` | `read-only` | `gpt-5.5` | Architecture, decomposition, sequencing, risk analysis |
 | `coding_worker` | `workspace-write` | `gpt-5.3-codex` | Normal implementation, bug fixes, refactors |
 | `fast_coding_worker` | `workspace-write` | `gpt-5.3-codex-spark` | Small localized edits and quick fixes |
-| `helper_worker` | `read-only` | `gpt-5.4-mini` | Investigation, lookup, repo reconnaissance, evidence gathering |
+| `helper_worker` | `read-only` | `gpt-5.4-mini` | Quick lookup, repo reconnaissance, evidence gathering |
+| `forensic_analyst` | `read-only` | `gpt-5.5` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
 | `doc_reviewer` | `read-only` | `gpt-5.4-mini` | Documentation correctness and drift review |
 | `reviewer` | `read-only` | `gpt-5.5` | Standard correctness, security, maintainability, regression review |
 
@@ -92,6 +94,7 @@ Common patterns:
 - Plan then implement: `planner` -> `coding_worker` -> `reviewer`
 - Fast fix: `fast_coding_worker`, with `reviewer` when behavior or public API changes
 - Investigation before editing: `helper_worker` -> `coding_worker` or `fast_coding_worker`
+- Deep root-cause investigation: `forensic_analyst` -> `coding_worker` once a cause is confirmed; the parent saves the accepted report to a file when the user requests it
 - Documentation drift review: `doc_reviewer`
 - High-stakes or security-sensitive review: `reviewer`
 

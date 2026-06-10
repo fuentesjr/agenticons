@@ -72,7 +72,8 @@ Preview writes with:
 | Plan a complex feature or migration | `planner` |
 | Implement normal code changes | `coding_worker` |
 | Make a small localized fix | `fast_coding_worker` |
-| Investigate without editing | `helper_worker` |
+| Quick lookup or reconnaissance without editing | `helper_worker` |
+| Find the root cause of a hard or intermittent failure | `forensic_analyst` |
 | Check documentation drift | `doc_reviewer` |
 | Review code for correctness and regressions | `reviewer` |
 | Review auth, payments, data loss, or production-risk changes | `reviewer` |

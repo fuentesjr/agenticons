@@ -1,6 +1,6 @@
 ---
 name: agenticons
-description: Selects and spawns named Codex custom subagents for planning, implementation, review, documentation review, and helper work. Use when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing.
+description: Selects and spawns named Codex custom subagents for planning, implementation, review, documentation review, deep investigation, and helper work. Use when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing.
 ---
 
 # Agenticons
@@ -20,10 +20,12 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
   - `coding_worker`
   - `fast_coding_worker`
   - `helper_worker`
+  - `forensic_analyst`
   - `doc_reviewer`
   - `reviewer`
 - Standard review always uses `reviewer`.
 - Documentation drift review uses `doc_reviewer`.
+- Deep root-cause investigation uses `forensic_analyst`.
 - Keep orchestration shallow: parent coordinates; subagents do focused work.
 - Avoid recursive delegation unless the user explicitly asks for it.
 - Prefer one subagent for simple work, two to four subagents for parallel review or independent implementation slices.
@@ -39,9 +41,12 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
 | Complex feature, vague request, architectural tradeoff, phased plan | `planner` |
 | Normal code implementation, multi-file edit, bug fix, refactor | `coding_worker` |
 | Small localized edit, mechanical change, simple failing test | `fast_coding_worker` |
-| Read-only lookup, repo reconnaissance, dependency/API check, test triage, docs/help task | `helper_worker` |
+| Read-only lookup, repo reconnaissance, dependency/API check, test triage, docs/API lookup | `helper_worker` |
+| Unclear root cause, intermittent or hard-to-reproduce failure, regression with no obvious cause, cross-system failure | `forensic_analyst` |
 | Documentation correctness, stale docs, README/API drift, changelog/release-note coverage | `doc_reviewer` |
 | Normal correctness/security/maintainability review | `reviewer` |
+
+Rule of thumb for investigations: if you already know roughly where to look, use `helper_worker`; if the question is why something fails and nobody knows, use `forensic_analyst`.
 
 ## Dispatch patterns
 
@@ -71,7 +76,16 @@ Spawn `doc_reviewer` when code behavior, public APIs, installation steps, comman
 
 ### Investigation before editing
 
-Spawn `helper_worker` first when the correct files, runtime path, API behavior, or failure mode are unclear. Then hand the evidence to `coding_worker` or `fast_coding_worker`.
+Spawn `helper_worker` first when you know roughly where to look but need the correct files, runtime path, or API behavior confirmed. Then hand the evidence to `coding_worker` or `fast_coding_worker`.
+
+### Deep investigation
+
+Spawn `forensic_analyst` when the question is why something fails and nobody knows: unclear root cause, intermittent or hard-to-reproduce failures, regressions with no obvious cause, or failures spanning systems.
+
+1. Give it the symptom, scope, and all evidence gathered so far.
+2. It returns a standalone Markdown report: summary, symptom and scope, evidence, ranked hypotheses, causal analysis, reproduction, recommended next steps, and open questions.
+3. If the user asks to save the report, write the accepted report verbatim to the requested path. The analyst is read-only and does not write files.
+4. Hand the confirmed cause to `coding_worker` or `fast_coding_worker` for the fix.
 
 ## Subagent prompt template
 
