@@ -2,7 +2,7 @@
 
 ## Goal
 
-Agenticons provides a small, explicit delegation layer for Codex. It gives users predictable named subagents for planning, implementation, review, documentation review, and investigation without turning the parent agent into a heavy workflow engine.
+Agenticons provides a small, explicit delegation layer for Codex. It gives users predictable named subagents for planning, implementation, review, documentation review, investigation, and QA verification without turning the parent agent into a heavy workflow engine.
 
 ## Non-Goals
 
@@ -32,6 +32,7 @@ agenticons/
       forensic_analyst.toml
       doc_reviewer.toml
       reviewer.toml
+      qa_engineer.toml
   .github/
     workflows/
       validate.yml
@@ -77,6 +78,7 @@ Subagents must not delegate or route. They return findings/results to the parent
 | `forensic_analyst` | `read-only` | `gpt-5.5` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
 | `doc_reviewer` | `read-only` | `gpt-5.4-mini` | Documentation correctness and drift review |
 | `reviewer` | `read-only` | `gpt-5.5` | Standard correctness, security, maintainability, regression review |
+| `qa_engineer` | `workspace-write` | `gpt-5.5` | Exploratory QA verification: exercises changes end-to-end, probes regressions, performance, and user-facing rough edges |
 
 ## Agent Spec Contract
 
@@ -104,6 +106,7 @@ Common patterns:
 - Deep root-cause investigation: `forensic_analyst` -> `coding_worker` once a cause is confirmed; the parent saves the accepted report to a file when the user requests it
 - Documentation drift review: `doc_reviewer`
 - High-stakes or security-sensitive review: `reviewer`
+- Exploratory QA verification: `qa_engineer` after a feature lands or before a release; it exercises the change rather than reading it, and the parent routes confirmed findings to `coding_worker` or `fast_coding_worker`
 
 Parallel writable work should use disjoint ownership. Parallel review work should use distinct review angles such as correctness, security, and regression risk.
 

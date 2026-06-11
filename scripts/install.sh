@@ -124,7 +124,7 @@ else
   raw_base="${AGENTICONS_RAW_BASE:-https://raw.githubusercontent.com/fuentesjr/agenticons/$ref}"
 fi
 
-agents='planner reviewer doc_reviewer coding_worker fast_coding_worker helper_worker forensic_analyst'
+agents='planner reviewer doc_reviewer coding_worker fast_coding_worker helper_worker forensic_analyst qa_engineer'
 
 has_command() {
   command -v "$1" >/dev/null 2>&1

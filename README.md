@@ -2,7 +2,7 @@
 <img width="1672" height="941" alt="agenticons" src="https://github.com/user-attachments/assets/0ca9fe2e-aaa5-4f5f-b682-0e7387a5d8d2" />
 
 
-Agenticons is a Codex skill package for users who want explicit, named subagent delegation for planning, implementation, review, documentation review, and investigation work.
+Agenticons is a Codex skill package for users who want explicit, named subagent delegation for planning, implementation, review, documentation review, investigation, and QA verification work.
 
 ## Why This Exists
 
@@ -72,6 +72,7 @@ Standard review always routes to `reviewer`, including security-sensitive and hi
 | `forensic_analyst` | `.codex/agents/forensic_analyst.toml` | `gpt-5.5` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
 | `doc_reviewer` | `.codex/agents/doc_reviewer.toml` | `gpt-5.4-mini` | Documentation correctness, stale docs, doc drift |
 | `reviewer` | `.codex/agents/reviewer.toml` | `gpt-5.5` | Standard code review |
+| `qa_engineer` | `.codex/agents/qa_engineer.toml` | `gpt-5.5` | Exploratory QA: exercises changes end-to-end, probes regressions, performance, and rough edges |
 
 Plan, implement, and review:
 
@@ -111,6 +112,17 @@ Use agenticons.
 
 Review the auth/session migration before release with reviewer.
 This affects login, session invalidation, and production user access.
+```
+
+Exercise a release candidate:
+
+```text
+Use agenticons.
+
+We are about to tag v2.4. Spawn qa_engineer to exercise the new rate limiter
+end-to-end: build it, drive realistic traffic, probe restarts and config
+reloads, and watch for latency regressions against v2.3. Report findings
+before we tag.
 ```
 
 For more detail, see [docs/faq.md](docs/faq.md) and [docs/design.md](docs/design.md).

@@ -77,6 +77,7 @@ Preview writes with:
 | Check documentation drift | `doc_reviewer` |
 | Review code for correctness and regressions | `reviewer` |
 | Review auth, payments, data loss, or production-risk changes | `reviewer` |
+| Exercise a feature or release end-to-end before shipping | `qa_engineer` |
 
 ## Can I use a different model for an Agenticons role?
 

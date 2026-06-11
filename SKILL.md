@@ -1,6 +1,6 @@
 ---
 name: agenticons
-description: Selects and spawns named Codex custom subagents for planning, implementation, review, documentation review, deep investigation, and helper work. Use when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing.
+description: Selects and spawns named Codex custom subagents for planning, implementation, review, documentation review, deep investigation, exploratory QA verification, and helper work. Use when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing.
 ---
 
 # Agenticons
@@ -23,9 +23,11 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
   - `forensic_analyst`
   - `doc_reviewer`
   - `reviewer`
+  - `qa_engineer`
 - Standard review always uses `reviewer`.
 - Documentation drift review uses `doc_reviewer`.
 - Deep root-cause investigation uses `forensic_analyst`.
+- Exploratory QA verification uses `qa_engineer`.
 - Keep orchestration shallow: parent coordinates; subagents do focused work.
 - Avoid recursive delegation unless the user explicitly asks for it.
 - Prefer one subagent for simple work, two to four subagents for parallel review or independent implementation slices.
@@ -45,8 +47,11 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
 | Unclear root cause, intermittent or hard-to-reproduce failure, regression with no obvious cause, cross-system failure | `forensic_analyst` |
 | Documentation correctness, stale docs, README/API drift, changelog/release-note coverage | `doc_reviewer` |
 | Normal correctness/security/maintainability review | `reviewer` |
+| Feature or release that should be exercised end-to-end, change-aware exploratory testing, performance regression probing, rough-edge hunting | `qa_engineer` |
 
 Rule of thumb for investigations: if you already know roughly where to look, use `helper_worker`; if the question is why something fails and nobody knows, use `forensic_analyst`.
+
+Rule of thumb for verification: `reviewer` reads the change; `qa_engineer` runs it. Use `qa_engineer` when confidence requires executing the software, not just reviewing the diff.
 
 ## Dispatch patterns
 
@@ -86,6 +91,15 @@ Spawn `forensic_analyst` when the question is why something fails and nobody kno
 2. It returns a standalone Markdown report: summary, symptom and scope, evidence, ranked hypotheses, causal analysis, reproduction, recommended next steps, and open questions.
 3. If the user asks to save the report, write the accepted report verbatim to the requested path. The analyst is read-only and does not write files.
 4. Hand the confirmed cause to `coding_worker` or `fast_coding_worker` for the fix.
+
+### Exploratory QA verification
+
+Spawn `qa_engineer` after a feature lands or before a release, when the change should be exercised rather than read: end-to-end behavior, regressions in adjacent features, performance changes, and rough edges a user would hit.
+
+1. Give it the change scope (branch, commits, or feature), how to build and run the software, and any environment details it needs.
+2. It inspects what changed, runs targeted scenarios, and returns a standalone Markdown verification report: verdict, scenarios executed, findings with reproduction steps, performance notes, rough edges, and what was not covered.
+3. It must not modify existing source, tests, or docs; any scratch artifacts it creates are listed in the report.
+4. Route confirmed findings to `coding_worker` or `fast_coding_worker`, including a regression test for each confirmed bug.
 
 ## Subagent prompt template
 
