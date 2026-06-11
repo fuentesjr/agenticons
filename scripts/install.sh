@@ -102,6 +102,13 @@ case "$script_path" in
   */*)
     script_dir=$(cd "$(dirname "$script_path")" 2>/dev/null && pwd -P || true)
     ;;
+  *)
+    # Invoked without a path prefix (e.g. `cd scripts && sh install.sh`).
+    # Piped runs land here too with $0 = "sh", which never exists as a file.
+    if [ -f "./$script_path" ]; then
+      script_dir=$(pwd -P)
+    fi
+    ;;
 esac
 
 if [ -n "$script_dir" ]; then
