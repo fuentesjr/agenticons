@@ -146,7 +146,7 @@ go test ./...
 go vet ./...
 ```
 
-The validator parses every agent TOML file and checks that `README.md` and `SKILL.md` mention every configured agent. It is also run by `.github/workflows/validate.yml`.
+The validator parses every agent TOML file and checks that the package docs, the model tables, and the installer's agent list stay aligned with the agent specs. `.github/workflows/validate.yml` runs the validator, tests, and vet on every push and pull request.
 
 ## License
 

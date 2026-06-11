@@ -76,6 +76,73 @@ func TestRunRejectsPackageDrift(t *testing.T) {
 			wantErr: "SKILL.md exact subagent list references missing agent files: ghost_worker",
 		},
 		{
+			name: "unsupported model reasoning effort",
+			mutate: func(t *testing.T, root string) {
+				replaceInFile(t, agentPath(root), `model_reasoning_effort = "medium"`, `model_reasoning_effort = "hgih"`)
+			},
+			wantErr: `.codex/agents/helper_worker.toml has unsupported model_reasoning_effort "hgih"`,
+		},
+		{
+			name: "stale model in readme table",
+			mutate: func(t *testing.T, root string) {
+				replaceInFile(t, filepath.Join(root, "README.md"), "`gpt-5.4-mini`", "`gpt-5.9`")
+			},
+			wantErr: "README.md does not document `helper_worker` with model `gpt-5.4-mini`",
+		},
+		{
+			name: "stale model in design doc table",
+			mutate: func(t *testing.T, root string) {
+				replaceInFile(t, designPath(root), "`gpt-5.4-mini`", "`gpt-5.9`")
+			},
+			wantErr: "docs/design.md does not document `helper_worker` with model `gpt-5.4-mini`",
+		},
+		{
+			name: "design doc missing agent mention",
+			mutate: func(t *testing.T, root string) {
+				writeFile(t, designPath(root), "# Agenticons Design\n")
+			},
+			wantErr: "docs/design.md does not mention `helper_worker`",
+		},
+		{
+			name: "missing design doc",
+			mutate: func(t *testing.T, root string) {
+				if err := os.Remove(designPath(root)); err != nil {
+					t.Fatalf("remove design doc: %v", err)
+				}
+			},
+			wantErr: "missing doc: docs/design.md",
+		},
+		{
+			name: "install script missing agent",
+			mutate: func(t *testing.T, root string) {
+				replaceInFile(t, installPath(root), "agents='helper_worker'", "agents=''")
+			},
+			wantErr: "scripts/install.sh agent list missing: helper_worker",
+		},
+		{
+			name: "install script unknown agent",
+			mutate: func(t *testing.T, root string) {
+				replaceInFile(t, installPath(root), "agents='helper_worker'", "agents='helper_worker ghost_worker'")
+			},
+			wantErr: "scripts/install.sh agent list references missing agent files: ghost_worker",
+		},
+		{
+			name: "install script without agents list",
+			mutate: func(t *testing.T, root string) {
+				writeFile(t, installPath(root), "#!/usr/bin/env sh\n")
+			},
+			wantErr: "scripts/install.sh does not define an agents='...' list",
+		},
+		{
+			name: "missing install script",
+			mutate: func(t *testing.T, root string) {
+				if err := os.Remove(installPath(root)); err != nil {
+					t.Fatalf("remove install script: %v", err)
+				}
+			},
+			wantErr: "missing scripts/install.sh",
+		},
+		{
 			name: "deprecated project identifier",
 			mutate: func(t *testing.T, root string) {
 				writeFile(t, filepath.Join(root, "README.md"), "# Agenticons\n\ncodex-dispatch\n`helper_worker`\n`.codex/agents/helper_worker.toml`\n")
@@ -132,6 +199,8 @@ func newPackageTree(t *testing.T) string {
 	root := t.TempDir()
 	writeFile(t, filepath.Join(root, "README.md"), validReadme())
 	writeFile(t, filepath.Join(root, "SKILL.md"), validSkill())
+	writeFile(t, designPath(root), validDesignDoc())
+	writeFile(t, installPath(root), validInstallScript())
 	writeFile(t, agentPath(root), validAgentTOML())
 	return root
 }
@@ -140,8 +209,25 @@ func validReadme() string {
 	return strings.Join([]string{
 		"# Agenticons",
 		"",
-		"- `.codex/agents/helper_worker.toml`",
-		"- `helper_worker`",
+		"| `helper_worker` | `.codex/agents/helper_worker.toml` | `gpt-5.4-mini` | Helper |",
+		"",
+	}, "\n")
+}
+
+func validDesignDoc() string {
+	return strings.Join([]string{
+		"# Agenticons Design",
+		"",
+		"| `helper_worker` | `read-only` | `gpt-5.4-mini` | Helper |",
+		"",
+	}, "\n")
+}
+
+func validInstallScript() string {
+	return strings.Join([]string{
+		"#!/usr/bin/env sh",
+		"",
+		"agents='helper_worker'",
 		"",
 	}, "\n")
 }
@@ -173,6 +259,14 @@ func validAgentTOML() string {
 
 func agentPath(root string) string {
 	return filepath.Join(root, agentsDir, "helper_worker.toml")
+}
+
+func designPath(root string) string {
+	return filepath.Join(root, "docs", "design.md")
+}
+
+func installPath(root string) string {
+	return filepath.Join(root, "scripts", "install.sh")
 }
 
 func replaceInFile(t *testing.T, path, old, replacement string) {

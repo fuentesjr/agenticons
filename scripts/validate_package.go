@@ -4,8 +4,11 @@
 // The checks intentionally focus on package contract drift:
 //   - every custom agent TOML file is parseable and has the required fields
 //   - each agent's declared name matches its filename
-//   - README.md and SKILL.md mention every configured agent
+//   - sandbox modes and model reasoning efforts are supported values
+//   - README.md, SKILL.md, and docs/design.md mention every configured agent
+//   - README.md and docs/design.md document each agent with its configured model
 //   - SKILL.md's exact dispatch list matches the files in .codex/agents
+//   - scripts/install.sh's agent list matches the files in .codex/agents
 //
 // Keeping those rules in code makes documentation updates harder to forget
 // when a role is added, renamed, or removed.
@@ -23,12 +26,20 @@ import (
 	"github.com/BurntSushi/toml"
 )
 
-const agentsDir = ".codex/agents"
+const (
+	agentsDir         = ".codex/agents"
+	installScriptPath = "scripts/install.sh"
+)
 
 var (
 	// docsToValidate are the public package docs that must stay aligned with
 	// the concrete agent files.
-	docsToValidate = []string{"README.md", "SKILL.md"}
+	docsToValidate = []string{"README.md", "SKILL.md", "docs/design.md"}
+
+	// modelTableDocs are the docs that publish the role/model contract as a
+	// table. Each must keep an agent's name and configured model on one line
+	// so model changes in TOML cannot leave the tables stale.
+	modelTableDocs = []string{"README.md", "docs/design.md"}
 
 	// requiredAgentFields mirrors the supported agent TOML contract. The
 	// validator checks these with TOML metadata so missing fields are caught
@@ -50,6 +61,22 @@ var (
 		"read-only":       {},
 		"workspace-write": {},
 	}
+
+	// validModelReasoningEfforts lists the reasoning effort values Codex
+	// accepts, so a typo in an agent spec fails validation instead of
+	// shipping.
+	validModelReasoningEfforts = map[string]struct{}{
+		"minimal": {},
+		"low":     {},
+		"medium":  {},
+		"high":    {},
+		"xhigh":   {},
+	}
+
+	// installAgentsLineRE matches the single-quoted agents list in
+	// scripts/install.sh. The installer iterates this list, so it must stay
+	// in sync with the agent files or installs silently drop roles.
+	installAgentsLineRE = regexp.MustCompile(`(?m)^agents='([^']*)'$`)
 
 	// deprecatedProjectIdentifiers catch incomplete project renames in the two
 	// primary docs. Codex remains valid product wording, but the old package
@@ -108,7 +135,11 @@ func run() error {
 		return err
 	}
 
-	fmt.Printf("Validated %d agent specs and %d docs.\n", len(agents), len(docsToValidate))
+	if err := validateInstallScript(root, agents); err != nil {
+		return err
+	}
+
+	fmt.Printf("Validated %d agent specs, %d docs, and the install script.\n", len(agents), len(docsToValidate))
 	return nil
 }
 
@@ -228,6 +259,10 @@ func validateAgentSpec(spec agentSpec, relPath, filename string) error {
 		return fmt.Errorf("%s has unsupported sandbox_mode %q", relPath, spec.SandboxMode)
 	}
 
+	if _, ok := validModelReasoningEfforts[spec.ModelReasoningEffort]; !ok {
+		return fmt.Errorf("%s has unsupported model_reasoning_effort %q", relPath, spec.ModelReasoningEffort)
+	}
+
 	if len(spec.NicknameCandidates) == 0 {
 		return fmt.Errorf("%s must define at least one nickname candidate", relPath)
 	}
@@ -264,6 +299,75 @@ func validateDocs(root string, agents []agentFile) error {
 	}
 	if err := validateSkillExactAgentList(docTexts["SKILL.md"], agents); err != nil {
 		return err
+	}
+
+	for _, docPath := range modelTableDocs {
+		if err := validateDocModelRows(docPath, docTexts[docPath], agents); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+// validateDocModelRows enforces the model routing contract in the docs that
+// publish it: each agent's backticked name must share a line with its
+// configured model, so editing a TOML model without updating the tables fails.
+func validateDocModelRows(docPath, text string, agents []agentFile) error {
+	for _, agent := range agents {
+		if !hasAgentModelLine(text, agent.spec) {
+			return fmt.Errorf("%s does not document `%s` with model `%s` on one line", docPath, agent.spec.Name, agent.spec.Model)
+		}
+	}
+	return nil
+}
+
+// hasAgentModelLine reports whether any single line mentions both the agent
+// name and its model as backticked identifiers.
+func hasAgentModelLine(text string, spec agentSpec) bool {
+	for _, line := range strings.Split(text, "\n") {
+		if strings.Contains(line, "`"+spec.Name+"`") && strings.Contains(line, "`"+spec.Model+"`") {
+			return true
+		}
+	}
+	return false
+}
+
+// validateInstallScript keeps the installer's hardcoded agent list in sync
+// with the agent files. Without this, a new role passes every doc check while
+// installs silently skip it.
+func validateInstallScript(root string, agents []agentFile) error {
+	data, err := os.ReadFile(filepath.Join(root, installScriptPath))
+	if err != nil {
+		if errors.Is(err, os.ErrNotExist) {
+			return fmt.Errorf("missing %s", installScriptPath)
+		}
+		return fmt.Errorf("read %s: %w", installScriptPath, err)
+	}
+
+	match := installAgentsLineRE.FindStringSubmatch(string(data))
+	if match == nil {
+		return fmt.Errorf("%s does not define an agents='...' list", installScriptPath)
+	}
+
+	listedNames := map[string]struct{}{}
+	for _, name := range strings.Fields(match[1]) {
+		listedNames[name] = struct{}{}
+	}
+
+	actualNames := map[string]struct{}{}
+	for _, agent := range agents {
+		actualNames[agent.spec.Name] = struct{}{}
+	}
+
+	missing := difference(actualNames, listedNames)
+	if len(missing) > 0 {
+		return fmt.Errorf("%s agent list missing: %s", installScriptPath, strings.Join(missing, ", "))
+	}
+
+	unknown := difference(listedNames, actualNames)
+	if len(unknown) > 0 {
+		return fmt.Errorf("%s agent list references missing agent files: %s", installScriptPath, strings.Join(unknown, ", "))
 	}
 
 	return nil

@@ -17,6 +17,9 @@ Agenticons provides a small, explicit delegation layer for Codex. It gives users
 agenticons/
   SKILL.md
   README.md
+  LICENSE
+  go.mod
+  go.sum
   docs/
     design.md
     faq.md
@@ -29,9 +32,13 @@ agenticons/
       forensic_analyst.toml
       doc_reviewer.toml
       reviewer.toml
+  .github/
+    workflows/
+      validate.yml
   scripts/
     install.sh
     validate_package.go
+    validate_package_test.go
 ```
 
 The package installs into a target repository or into the current user's global Codex locations with `scripts/install.sh`. Repo-local installation places `SKILL.md` under `.agents/skills/agenticons/` and agent specs under `.codex/agents/`. Global installation places them under `~/.agents/skills/agenticons/` and `~/.codex/agents/`.
@@ -105,12 +112,15 @@ Parallel writable work should use disjoint ownership. Parallel review work shoul
 `scripts/validate_package.go` protects the package contract before publishing or installation. It checks:
 
 - every top-level `.codex/agents/*.toml` file is valid TOML
-- required agent fields are present
-- agent names match filenames
-- sandbox modes are supported
+- required agent fields are present and non-blank
+- agent names match filenames and are unique
+- sandbox modes and model reasoning efforts are supported values
 - nickname candidates are non-empty
-- `README.md` and `SKILL.md` mention every configured agent
+- `README.md`, `SKILL.md`, and `docs/design.md` mention every configured agent
+- `README.md` lists every agent TOML file path
+- `README.md` and `docs/design.md` document each agent with its configured model on one line
 - `SKILL.md`'s exact dispatch list matches the agent files
+- `scripts/install.sh`'s agent list matches the agent files
 - deprecated project identifiers do not remain in primary docs
 
 Run validation and tests with:
@@ -120,6 +130,8 @@ go run ./scripts/validate_package.go
 go test ./...
 go vet ./...
 ```
+
+`.github/workflows/validate.yml` runs all three commands on every push and pull request.
 
 ## Installation Script
 
@@ -135,6 +147,6 @@ The script works from a local checkout. It also works through a raw GitHub pipe,
 
 ## Change Policy
 
-When adding, removing, or renaming an agent, update the TOML file, `SKILL.md`, `README.md`, and any relevant docs in the same change. Run the validator and tests before publishing.
+When adding, removing, or renaming an agent, update the TOML file, `SKILL.md`, `README.md`, the agent list in `scripts/install.sh`, and any relevant docs in the same change. Run the validator and tests before publishing.
 
 Model, sandbox, and role changes should be deliberate because they affect the delegation contract users rely on.

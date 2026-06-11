@@ -116,8 +116,8 @@ go vet ./...
 
 ## What does the validator check?
 
-The validator checks that every agent TOML file is parseable, required fields are present, agent names match filenames, sandbox modes are supported, and `README.md` and `SKILL.md` mention every configured agent.
+The validator checks that every agent TOML file is parseable, required fields are present, agent names match filenames, sandbox modes and reasoning efforts are supported, `README.md`, `SKILL.md`, and `docs/design.md` mention every configured agent, the model tables in `README.md` and `docs/design.md` match the TOML specs, and the agent list in `scripts/install.sh` matches the agent files.
 
 ## Why is my new agent failing validation?
 
-Check that the TOML file has all required fields, the `name` matches the filename, the sandbox mode is `read-only` or `workspace-write`, and both `README.md` and `SKILL.md` mention the new agent.
+Check that the TOML file has all required fields, the `name` matches the filename, the sandbox mode is `read-only` or `workspace-write`, the reasoning effort is a supported value, `README.md`, `SKILL.md`, and `docs/design.md` mention the new agent (including its model in the README and design tables), and the agent is listed in `scripts/install.sh`.
