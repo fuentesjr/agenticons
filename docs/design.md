@@ -2,7 +2,7 @@
 
 ## Goal
 
-Agenticons provides a small, explicit delegation layer for Codex. It gives users predictable named subagents for planning, implementation, review, documentation review, investigation, and QA verification without turning the parent agent into a heavy workflow engine.
+Agenticons provides a small, explicit delegation layer for Codex. It gives users a fixed, named set of subagents for planning, implementation, review, documentation review, investigation, and QA verification without turning the parent agent into a heavy workflow engine.
 
 ## Non-Goals
 

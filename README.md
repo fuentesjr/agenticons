@@ -6,7 +6,7 @@ Agenticons is a Codex skill package for users who want explicit, named subagent 
 
 ## Why This Exists
 
-Codex can delegate work to subagents, but repeated manual routing is easy to make inconsistent. Agenticons packages a small routing skill plus named agent specs so a user can ask for delegation once and get predictable roles such as `planner`, `coding_worker`, `reviewer`, or `doc_reviewer`.
+Codex can delegate work to subagents, but repeated manual routing is easy to make inconsistent. Agenticons packages a small routing skill plus named agent specs so a user can ask for delegation once and route it through a fixed, explicit set of named roles such as `planner`, `coding_worker`, `reviewer`, or `doc_reviewer`.
 
 ```text
 Use agenticons.
