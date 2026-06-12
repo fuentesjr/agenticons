@@ -1,5 +1,6 @@
 # Agenticons
-<img width="1672" height="941" alt="agenticons" src="https://github.com/user-attachments/assets/0ca9fe2e-aaa5-4f5f-b682-0e7387a5d8d2" />
+<img width="1672" height="941" alt="agenticons_ruby_banner" src="https://github.com/user-attachments/assets/91d20c4f-d80b-4069-934b-aa37f6d735c6" />
+
 
 
 Agenticons is a Codex skill package for users who want explicit, named subagent delegation for planning, implementation, review, documentation review, investigation, and QA verification work.
