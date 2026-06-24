@@ -53,6 +53,8 @@ Rule of thumb for investigations: if you already know roughly where to look, use
 
 Rule of thumb for verification: `reviewer` reads the change; `qa_engineer` runs it. Use `qa_engineer` when confidence requires executing the software, not just reviewing the diff.
 
+Rule of thumb for escalation: start with the cheaper read-only agent (`helper_worker`) and escalate to `forensic_analyst` only when recon does not surface the cause. Match model tier to task difficulty; do not pay for capability the task does not need.
+
 ## Dispatch patterns
 
 ### Plan then implement
