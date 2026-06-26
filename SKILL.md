@@ -103,6 +103,13 @@ Spawn `qa_engineer` after a feature lands or before a release, when the change s
 3. It must not modify existing source, tests, or docs; any scratch artifacts it creates are listed in the report.
 4. Route confirmed findings to `coding_worker` or `fast_coding_worker`, including a regression test for each confirmed bug.
 
+## User-facing labels
+
+- Maintain a meaningful local label for every spawned subagent in user-facing updates and summaries.
+- Use labels in the form `<role>: <task or scope>`, for example `helper_worker: PackageDependencyPressure readiness review`.
+- Treat tool-generated nicknames and agent ids as traceability metadata only. If needed, put them after the semantic label in parentheses; do not use them as the primary name.
+- When consolidating results, refer to subagents by their semantic labels so readers can tell what each agent was responsible for without decoding generated nicknames.
+
 ## Subagent prompt template
 
 When spawning a subagent, include:
