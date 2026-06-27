@@ -5,8 +5,9 @@
 //   - every custom agent TOML file is parseable and has the required fields
 //   - each agent's declared name matches its filename
 //   - sandbox modes and model reasoning efforts are supported values
-//   - README.md, SKILL.md, and docs/design.md mention every configured agent
+//   - README.md, SKILL.md, docs/design.md, and docs/faq.md mention every configured agent
 //   - README.md and docs/design.md document each agent with its configured model
+//   - docs/design.md documents each agent with its configured sandbox_mode
 //   - SKILL.md's exact dispatch list matches the files in .codex/agents
 //   - scripts/install.sh's agent list matches the files in .codex/agents
 //
@@ -34,12 +35,17 @@ const (
 var (
 	// docsToValidate are the public package docs that must stay aligned with
 	// the concrete agent files.
-	docsToValidate = []string{"README.md", "SKILL.md", "docs/design.md"}
+	docsToValidate = []string{"README.md", "SKILL.md", "docs/design.md", "docs/faq.md"}
 
 	// modelTableDocs are the docs that publish the role/model contract as a
 	// table. Each must keep an agent's name and configured model on one line
 	// so model changes in TOML cannot leave the tables stale.
 	modelTableDocs = []string{"README.md", "docs/design.md"}
+
+	// sandboxTableDocs publish the role/sandbox contract as a table; each must
+	// keep an agent's name and configured sandbox_mode on one line so sandbox
+	// changes in TOML cannot leave the tables stale.
+	sandboxTableDocs = []string{"docs/design.md"}
 
 	// requiredAgentFields mirrors the supported agent TOML contract. The
 	// validator checks these with TOML metadata so missing fields are caught
@@ -307,6 +313,12 @@ func validateDocs(root string, agents []agentFile) error {
 		}
 	}
 
+	for _, docPath := range sandboxTableDocs {
+		if err := validateDocSandboxRows(docPath, docTexts[docPath], agents); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -327,6 +339,29 @@ func validateDocModelRows(docPath, text string, agents []agentFile) error {
 func hasAgentModelLine(text string, spec agentSpec) bool {
 	for _, line := range strings.Split(text, "\n") {
 		if strings.Contains(line, "`"+spec.Name+"`") && strings.Contains(line, "`"+spec.Model+"`") {
+			return true
+		}
+	}
+	return false
+}
+
+// validateDocSandboxRows enforces the sandbox contract in docs that publish
+// it: each agent's backticked name must share a line with its configured
+// sandbox_mode.
+func validateDocSandboxRows(docPath, text string, agents []agentFile) error {
+	for _, agent := range agents {
+		if !hasAgentSandboxLine(text, agent.spec) {
+			return fmt.Errorf("%s does not document `%s` with sandbox `%s` on one line", docPath, agent.spec.Name, agent.spec.SandboxMode)
+		}
+	}
+	return nil
+}
+
+// hasAgentSandboxLine reports whether any single line mentions both the agent
+// name and its sandbox_mode as backticked identifiers.
+func hasAgentSandboxLine(text string, spec agentSpec) bool {
+	for _, line := range strings.Split(text, "\n") {
+		if strings.Contains(line, "`"+spec.Name+"`") && strings.Contains(line, "`"+spec.SandboxMode+"`") {
 			return true
 		}
 	}
@@ -415,7 +450,7 @@ func validateDocMentionsAgents(docPath, text string, agents []agentFile) error {
 // concrete TOML file a user must copy into a target repository.
 func validateReadmeMentionsAgentFiles(readme string, agents []agentFile) error {
 	for _, agent := range agents {
-		if !strings.Contains(readme, "`"+agent.relPath+"`") && !strings.Contains(readme, agent.relPath) {
+		if !strings.Contains(readme, agent.relPath) {
 			return fmt.Errorf("README.md does not mention %s", agent.relPath)
 		}
 	}

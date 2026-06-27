@@ -121,9 +121,10 @@ Parallel writable work should use disjoint ownership. Parallel review work shoul
 - agent names match filenames and are unique
 - sandbox modes and model reasoning efforts are supported values
 - nickname candidates are non-empty
-- `README.md`, `SKILL.md`, and `docs/design.md` mention every configured agent
+- `README.md`, `SKILL.md`, `docs/design.md`, and `docs/faq.md` mention every configured agent
 - `README.md` lists every agent TOML file path
 - `README.md` and `docs/design.md` document each agent with its configured model on one line
+- `docs/design.md` Sandbox column matches each agent's `sandbox_mode`
 - `SKILL.md`'s exact dispatch list matches the agent files
 - `scripts/install.sh`'s agent list matches the agent files
 - deprecated project identifiers do not remain in primary docs

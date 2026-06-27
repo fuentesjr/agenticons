@@ -97,6 +97,20 @@ func TestRunRejectsPackageDrift(t *testing.T) {
 			wantErr: "docs/design.md does not document `helper_worker` with model `gpt-5.4-mini`",
 		},
 		{
+			name: "faq.md missing agent mention",
+			mutate: func(t *testing.T, root string) {
+				writeFile(t, faqPath(root), "# Agenticons FAQ\n")
+			},
+			wantErr: "docs/faq.md does not mention `helper_worker`",
+		},
+		{
+			name: "stale sandbox in design doc table",
+			mutate: func(t *testing.T, root string) {
+				replaceInFile(t, designPath(root), "`read-only`", "`workspace-write`")
+			},
+			wantErr: "docs/design.md does not document `helper_worker` with sandbox `read-only`",
+		},
+		{
 			name: "design doc missing agent mention",
 			mutate: func(t *testing.T, root string) {
 				writeFile(t, designPath(root), "# Agenticons Design\n")
@@ -200,6 +214,7 @@ func newPackageTree(t *testing.T) string {
 	writeFile(t, filepath.Join(root, "README.md"), validReadme())
 	writeFile(t, filepath.Join(root, "SKILL.md"), validSkill())
 	writeFile(t, designPath(root), validDesignDoc())
+	writeFile(t, faqPath(root), validFaq())
 	writeFile(t, installPath(root), validInstallScript())
 	writeFile(t, agentPath(root), validAgentTOML())
 	return root
@@ -257,12 +272,20 @@ func validAgentTOML() string {
 	}, "\n")
 }
 
+func validFaq() string {
+	return "# Agenticons FAQ\n\n`helper_worker`\n"
+}
+
 func agentPath(root string) string {
 	return filepath.Join(root, agentsDir, "helper_worker.toml")
 }
 
 func designPath(root string) string {
 	return filepath.Join(root, "docs", "design.md")
+}
+
+func faqPath(root string) string {
+	return filepath.Join(root, "docs", "faq.md")
 }
 
 func installPath(root string) string {
