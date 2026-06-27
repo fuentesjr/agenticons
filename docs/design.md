@@ -33,6 +33,7 @@ agenticons/
       doc_reviewer.toml
       reviewer.toml
       qa_engineer.toml
+      edge_case_analyst.toml
   .github/
     workflows/
       validate.yml
@@ -81,6 +82,7 @@ Subagents must not delegate or route. They return findings/results to the parent
 | `doc_reviewer` | `read-only` | `gpt-5.4-mini` | Documentation correctness and drift review |
 | `reviewer` | `read-only` | `gpt-5.5` | Standard correctness, security, maintainability, regression review |
 | `qa_engineer` | `workspace-write` | `gpt-5.5` | Exploratory QA verification: exercises changes end-to-end, probes regressions, performance, and user-facing rough edges |
+| `edge_case_analyst` | `read-only` | `gpt-5.5` | Edge-case and coverage-gap discovery: finds unconsidered cases and specifies expected behavior and test cases |
 
 ## Agent Spec Contract
 
@@ -109,6 +111,7 @@ Common patterns:
 - Documentation drift review: `doc_reviewer`
 - High-stakes or security-sensitive review: `reviewer`
 - Exploratory QA verification: `qa_engineer` after a feature lands or before a release; it exercises the change rather than reading it, and the parent routes confirmed findings to `coding_worker` or `fast_coding_worker`
+- Edge-case and coverage analysis: `edge_case_analyst` returns a report of uncovered cases with proposed specs and concrete test cases; the parent saves the report when the user requests it and routes confirmed cases to `coding_worker` or `fast_coding_worker`
 
 Parallel writable work should use disjoint ownership. Parallel review work should use distinct review angles such as correctness, security, and regression risk.
 

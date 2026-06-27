@@ -78,6 +78,7 @@ Preview writes with:
 | Review code for correctness and regressions | `reviewer` |
 | Review auth, payments, data loss, or production-risk changes | `reviewer` |
 | Exercise a feature or release end-to-end before shipping | `qa_engineer` |
+| Find edge cases or missing test coverage nobody considered | `edge_case_analyst` |
 
 ## Can I use a different model for an Agenticons role?
 

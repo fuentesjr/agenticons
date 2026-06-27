@@ -74,6 +74,7 @@ Standard review always routes to `reviewer`, including security-sensitive and hi
 | `doc_reviewer` | `.codex/agents/doc_reviewer.toml` | `gpt-5.4-mini` | Documentation correctness, stale docs, doc drift |
 | `reviewer` | `.codex/agents/reviewer.toml` | `gpt-5.5` | Standard code review |
 | `qa_engineer` | `.codex/agents/qa_engineer.toml` | `gpt-5.5` | Exploratory QA: exercises changes end-to-end, probes regressions, performance, and rough edges |
+| `edge_case_analyst` | `.codex/agents/edge_case_analyst.toml` | `gpt-5.5` | Find unconsidered edge cases and design gaps; specify expected behavior and concrete test cases |
 
 Plan, implement, and review:
 
@@ -124,6 +125,17 @@ We are about to tag v2.4. Spawn qa_engineer to exercise the new rate limiter
 end-to-end: build it, drive realistic traffic, probe restarts and config
 reloads, and watch for latency regressions against v2.3. Report findings
 before we tag.
+```
+
+Find uncovered edge cases before writing code:
+
+```text
+Use agenticons.
+
+We are adding coupon stacking to checkout. Spawn edge_case_analyst to find the
+edge cases and missing acceptance criteria we have not considered (expired
+coupons, conflicting discounts, rounding, currency, concurrency) and return a
+report with a concrete test case for each. Do not edit code.
 ```
 
 For more detail, see [docs/faq.md](docs/faq.md) and [docs/design.md](docs/design.md).

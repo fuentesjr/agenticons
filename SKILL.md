@@ -24,10 +24,12 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
   - `doc_reviewer`
   - `reviewer`
   - `qa_engineer`
+  - `edge_case_analyst`
 - Standard review always uses `reviewer`.
 - Documentation drift review uses `doc_reviewer`.
 - Deep root-cause investigation uses `forensic_analyst`.
 - Exploratory QA verification uses `qa_engineer`.
+- Edge-case and coverage analysis uses `edge_case_analyst`.
 - Keep orchestration shallow: parent coordinates; subagents do focused work.
 - Avoid recursive delegation unless the user explicitly asks for it.
 - Prefer one subagent for simple work, two to four subagents for parallel review or independent implementation slices.
@@ -48,12 +50,15 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
 | Documentation correctness, stale docs, README/API drift, changelog/release-note coverage | `doc_reviewer` |
 | Normal correctness/security/maintainability review | `reviewer` |
 | Feature or release that should be exercised end-to-end, change-aware exploratory testing, performance regression probing, rough-edge hunting | `qa_engineer` |
+| Uncovered edge cases, missing acceptance criteria, design gaps, untested behavior, coverage holes | `edge_case_analyst` |
 
 Rule of thumb for investigations: if you already know roughly where to look, use `helper_worker`; if the question is why something fails and nobody knows, use `forensic_analyst`.
 
 Rule of thumb for verification: `reviewer` reads the change; `qa_engineer` runs it. Use `qa_engineer` when confidence requires executing the software, not just reviewing the diff.
 
 Rule of thumb for escalation: start with the cheaper read-only agent (`helper_worker`) and escalate to `forensic_analyst` only when recon does not surface the cause. Match model tier to task difficulty; do not pay for capability the task does not need.
+
+Rule of thumb for coverage: `reviewer` judges the change as written and `qa_engineer` runs it; `edge_case_analyst` asks what cases were never considered or tested and specifies them with concrete test cases.
 
 ## Dispatch patterns
 
@@ -102,6 +107,15 @@ Spawn `qa_engineer` after a feature lands or before a release, when the change s
 2. It inspects what changed, runs targeted scenarios, and returns a standalone Markdown verification report: verdict, scenarios executed, findings with reproduction steps, performance notes, rough edges, and what was not covered.
 3. It must not modify existing source, tests, or docs; any scratch artifacts it creates are listed in the report.
 4. Route confirmed findings to `coding_worker` or `fast_coding_worker`, including a regression test for each confirmed bug.
+
+### Edge-case and coverage analysis
+
+Spawn `edge_case_analyst` to find cases nobody considered and specify them: missing acceptance criteria, design edge cases, and untested behavior across input, failure, concurrency, and security dimensions.
+
+1. Give it the feature, change scope, or area to analyze, plus where the existing tests and specs live so it can tell covered from uncovered.
+2. It returns a standalone Markdown report: uncovered cases ranked by risk, each with scenario, expected behavior, a concrete test case, and coverage evidence, plus proposed acceptance criteria and open questions.
+3. If the user asks to save the report, write the accepted report verbatim to the requested path. The analyst is read-only and does not write files.
+4. Route confirmed cases to `coding_worker` or `fast_coding_worker` to add the tests and any fix.
 
 ## User-facing labels
 
