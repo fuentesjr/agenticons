@@ -87,7 +87,8 @@ if [ "$install_global" -eq 1 ]; then
   agents_dest_dir="$home_dir/.codex/agents"
 else
   [ -n "$target_repo" ] || die "missing required --target <repo> or --global"
-  target_repo=$(cd "$target_repo" 2>/dev/null && pwd -P) || die "target repo does not exist: $target_repo"
+  resolved_repo=$(cd "$target_repo" 2>/dev/null && pwd -P) || die "target repo does not exist: $target_repo"
+  target_repo=$resolved_repo
   [ -d "$target_repo" ] || die "target is not a directory: $target_repo"
   install_scope="into $target_repo"
   skill_dest="$target_repo/.agents/skills/agenticons/SKILL.md"
@@ -124,7 +125,7 @@ else
   raw_base="${AGENTICONS_RAW_BASE:-https://raw.githubusercontent.com/fuentesjr/agenticons/$ref}"
 fi
 
-agents='planner reviewer doc_reviewer coding_worker fast_coding_worker helper_worker forensic_analyst qa_engineer'
+agents='planner coding_worker fast_coding_worker helper_worker forensic_analyst doc_reviewer reviewer qa_engineer'
 
 has_command() {
   command -v "$1" >/dev/null 2>&1
