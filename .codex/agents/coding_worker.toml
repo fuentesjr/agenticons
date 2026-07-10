@@ -1,6 +1,6 @@
 name = "coding_worker"
 description = "Implementation subagent for normal code changes, multi-file fixes, refactors, and feature work."
-model = "gpt-5.3-codex"
+model = "gpt-5.6-terra"
 model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 nickname_candidates = ["Code Atlas", "Code Delta", "Code Echo"]

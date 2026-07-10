@@ -74,15 +74,15 @@ Subagents must not delegate or route. They return findings/results to the parent
 
 | Agent | Sandbox | Model | Responsibility |
 |---|---|---:|---|
-| `planner` | `read-only` | `gpt-5.5` | Architecture, decomposition, sequencing, risk analysis |
-| `coding_worker` | `workspace-write` | `gpt-5.3-codex` | Normal implementation, bug fixes, refactors |
-| `fast_coding_worker` | `workspace-write` | `gpt-5.3-codex-spark` | Small localized edits and quick fixes |
-| `helper_worker` | `read-only` | `gpt-5.4-mini` | Quick lookup, repo reconnaissance, evidence gathering |
-| `forensic_analyst` | `read-only` | `gpt-5.5` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
-| `doc_reviewer` | `read-only` | `gpt-5.4-mini` | Documentation correctness and drift review |
-| `reviewer` | `read-only` | `gpt-5.5` | Standard correctness, security, maintainability, regression review |
-| `qa_engineer` | `workspace-write` | `gpt-5.5` | Exploratory QA verification: exercises changes end-to-end, probes regressions, performance, and user-facing rough edges |
-| `edge_case_analyst` | `read-only` | `gpt-5.5` | Edge-case and coverage-gap discovery: finds unconsidered cases and specifies expected behavior and test cases |
+| `planner` | `read-only` | `gpt-5.6-sol` | Architecture, decomposition, sequencing, risk analysis |
+| `coding_worker` | `workspace-write` | `gpt-5.6-terra` | Normal implementation, bug fixes, refactors |
+| `fast_coding_worker` | `workspace-write` | `gpt-5.6-luna` | Small localized edits and quick fixes |
+| `helper_worker` | `read-only` | `gpt-5.6-luna` | Quick lookup, repo reconnaissance, evidence gathering |
+| `forensic_analyst` | `read-only` | `gpt-5.6-sol` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
+| `doc_reviewer` | `read-only` | `gpt-5.6-luna` | Documentation correctness and drift review |
+| `reviewer` | `read-only` | `gpt-5.6-sol` | Standard correctness, security, maintainability, regression review |
+| `qa_engineer` | `workspace-write` | `gpt-5.6-terra` | Exploratory QA verification: exercises changes end-to-end, probes regressions, performance, and user-facing rough edges |
+| `edge_case_analyst` | `read-only` | `gpt-5.6-sol` | Edge-case and coverage-gap discovery: finds unconsidered cases and specifies expected behavior and test cases |
 
 ## Agent Spec Contract
 

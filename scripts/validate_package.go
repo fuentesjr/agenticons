@@ -77,6 +77,7 @@ var (
 		"medium":  {},
 		"high":    {},
 		"xhigh":   {},
+		"max":     {},
 	}
 
 	// installAgentsLineRE matches the single-quoted agents list in

@@ -1,6 +1,6 @@
 name = "doc_reviewer"
 description = "Documentation review subagent for keeping documentation updated, accurate, and free of drift."
-model = "gpt-5.4-mini"
+model = "gpt-5.6-luna"
 model_reasoning_effort = "medium"
 sandbox_mode = "read-only"
 nickname_candidates = ["Docs Atlas", "Docs Delta", "Docs Echo"]

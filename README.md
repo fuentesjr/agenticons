@@ -66,15 +66,15 @@ Standard review always routes to `reviewer`, including security-sensitive and hi
 
 | Subagent | Agent file | Model | Use |
 |---|---|---:|---|
-| `planner` | `.codex/agents/planner.toml` | `gpt-5.5` | Architecture, decomposition, sequencing, risk analysis |
-| `coding_worker` | `.codex/agents/coding_worker.toml` | `gpt-5.3-codex` | Normal implementation, bug fixes, refactors |
-| `fast_coding_worker` | `.codex/agents/fast_coding_worker.toml` | `gpt-5.3-codex-spark` | Small localized edits and quick fixes |
-| `helper_worker` | `.codex/agents/helper_worker.toml` | `gpt-5.4-mini` | Read-only lookup, repo reconnaissance, docs/API lookup |
-| `forensic_analyst` | `.codex/agents/forensic_analyst.toml` | `gpt-5.5` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
-| `doc_reviewer` | `.codex/agents/doc_reviewer.toml` | `gpt-5.4-mini` | Documentation correctness, stale docs, doc drift |
-| `reviewer` | `.codex/agents/reviewer.toml` | `gpt-5.5` | Standard code review |
-| `qa_engineer` | `.codex/agents/qa_engineer.toml` | `gpt-5.5` | Exploratory QA: exercises changes end-to-end, probes regressions, performance, and rough edges |
-| `edge_case_analyst` | `.codex/agents/edge_case_analyst.toml` | `gpt-5.5` | Find unconsidered edge cases and design gaps; specify expected behavior and concrete test cases |
+| `planner` | `.codex/agents/planner.toml` | `gpt-5.6-sol` | Architecture, decomposition, sequencing, risk analysis |
+| `coding_worker` | `.codex/agents/coding_worker.toml` | `gpt-5.6-terra` | Normal implementation, bug fixes, refactors |
+| `fast_coding_worker` | `.codex/agents/fast_coding_worker.toml` | `gpt-5.6-luna` | Small localized edits and quick fixes |
+| `helper_worker` | `.codex/agents/helper_worker.toml` | `gpt-5.6-luna` | Read-only lookup, repo reconnaissance, docs/API lookup |
+| `forensic_analyst` | `.codex/agents/forensic_analyst.toml` | `gpt-5.6-sol` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
+| `doc_reviewer` | `.codex/agents/doc_reviewer.toml` | `gpt-5.6-luna` | Documentation correctness, stale docs, doc drift |
+| `reviewer` | `.codex/agents/reviewer.toml` | `gpt-5.6-sol` | Standard code review |
+| `qa_engineer` | `.codex/agents/qa_engineer.toml` | `gpt-5.6-terra` | Exploratory QA: exercises changes end-to-end, probes regressions, performance, and rough edges |
+| `edge_case_analyst` | `.codex/agents/edge_case_analyst.toml` | `gpt-5.6-sol` | Find unconsidered edge cases and design gaps; specify expected behavior and concrete test cases |
 
 Plan, implement, and review:
 
