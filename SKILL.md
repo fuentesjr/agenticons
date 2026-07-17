@@ -47,7 +47,7 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
 | Small localized edit, mechanical change, simple failing test | `fast_coding_worker` |
 | Read-only lookup, repo reconnaissance, dependency/API check, test triage, docs/API lookup | `helper_worker` |
 | Unclear root cause, intermittent or hard-to-reproduce failure, regression with no obvious cause, cross-system failure | `forensic_analyst` |
-| Documentation correctness, stale docs, README/API drift, changelog/release-note coverage | `doc_reviewer` |
+| Documentation accuracy/drift, obsolete low-value docs to remove, AI-confusing docs, changelog coverage | `doc_reviewer` |
 | Normal correctness/security/maintainability review | `reviewer` |
 | Feature or release that should be exercised end-to-end, change-aware exploratory testing, performance regression probing, rough-edge hunting | `qa_engineer` |
 | Uncovered edge cases, missing acceptance criteria, design gaps, untested behavior, coverage holes | `edge_case_analyst` |
@@ -56,7 +56,9 @@ Rule of thumb for investigations: if you already know roughly where to look, use
 
 Rule of thumb for verification: `reviewer` reads the change; `qa_engineer` runs it. Use `qa_engineer` when confidence requires executing the software, not just reviewing the diff.
 
-Rule of thumb for escalation: start with the cheaper read-only agent (`helper_worker`) and escalate to `forensic_analyst` only when recon does not surface the cause. Match model tier to task difficulty; do not pay for capability the task does not need.
+Rule of thumb for documentation: use `helper_worker` to look up or summarize what existing docs say; use `doc_reviewer` to audit whether docs match implementation (drift, gaps, overpromises), to recommend removing obsolete low-value docs, and to flag anything that could confuse AI agents. Prefer delete/archive over leaving agent-misleading prose. `doc_reviewer` does not edit files.
+
+Rule of thumb for escalation: start with the cheaper read-only agent (`helper_worker`) and escalate to `forensic_analyst` only when recon does not surface the cause. Match model tier to task difficulty; do not pay for capability the task does not need. For security/threat-model docs or precise public API contracts, pair `doc_reviewer` with `reviewer` on the related code — do not treat doc drift review alone as a security or correctness sign-off.
 
 Rule of thumb for coverage: `reviewer` judges the change as written and `qa_engineer` runs it; `edge_case_analyst` asks what cases were never considered or tested and specifies them with concrete test cases.
 
@@ -84,7 +86,13 @@ Use `reviewer` for normal review, including security-sensitive review.
 
 ### Documentation drift review
 
-Spawn `doc_reviewer` when code behavior, public APIs, installation steps, commands, configuration, examples, or user-facing workflows may have changed. Ask it to compare implementation and docs, identify stale or missing documentation, and recommend exact doc updates.
+Spawn `doc_reviewer` when code behavior, public APIs, installation steps, commands, configuration, examples, user-facing workflows, or agent-facing instructions may have changed — or when docs may be obsolete, redundant, or confusing to AI agents.
+
+1. Give it the change scope (branch, commits, PR, or feature) and the docs surfaces to check when known (README, install, CLI, config, API reference, examples, changelog, agent/skill instruction files).
+2. It works change-aware: maps user- and agent-facing changes to docs, prefers implementation evidence over prose, treats AI-confusing docs as critical, recommends remove/archive for obsolete low-value material, and returns a standalone Markdown report (summary, scope, ranked findings with update/remove actions, prune candidates, current/verified, not covered, next steps).
+3. If the user asks to save the report, write the accepted report verbatim to the requested path. The reviewer is read-only and does not write files.
+4. Route confirmed doc updates and removals to `fast_coding_worker` for small localized edits/deletes, or `coding_worker` for larger multi-file rewrites or cleanups.
+5. When the same change also needs code correctness or security review (especially threat-model or public API contract docs), spawn `reviewer` on the related code in parallel or after; do not substitute `doc_reviewer` for `reviewer`.
 
 ### Investigation before editing
 

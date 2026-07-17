@@ -74,7 +74,8 @@ Preview writes with:
 | Make a small localized fix | `fast_coding_worker` |
 | Quick lookup or reconnaissance without editing | `helper_worker` |
 | Find the root cause of a hard or intermittent failure | `forensic_analyst` |
-| Check documentation drift | `doc_reviewer` |
+| Audit docs for drift/accuracy, obsolete low-value material, and AI-confusing content (report only) | `doc_reviewer` |
+| Apply confirmed documentation fixes or removals | `fast_coding_worker` or `coding_worker` |
 | Review code for correctness and regressions | `reviewer` |
 | Review auth, payments, data loss, or production-risk changes | `reviewer` |
 | Exercise a feature or release end-to-end before shipping | `qa_engineer` |

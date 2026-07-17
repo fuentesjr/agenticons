@@ -79,7 +79,7 @@ Subagents must not delegate or route. They return findings/results to the parent
 | `fast_coding_worker` | `workspace-write` | `gpt-5.6-luna` | Small localized edits and quick fixes |
 | `helper_worker` | `read-only` | `gpt-5.6-luna` | Quick lookup, repo reconnaissance, evidence gathering |
 | `forensic_analyst` | `read-only` | `gpt-5.6-sol` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
-| `doc_reviewer` | `read-only` | `gpt-5.6-luna` | Documentation correctness and drift review |
+| `doc_reviewer` | `read-only` | `gpt-5.6-luna` | Doc accuracy/drift, prune obsolete low-value docs, flag AI-confusing content; saveable report |
 | `reviewer` | `read-only` | `gpt-5.6-sol` | Standard correctness, security, maintainability, regression review |
 | `qa_engineer` | `workspace-write` | `gpt-5.6-terra` | Exploratory QA verification: exercises changes end-to-end, probes regressions, performance, and user-facing rough edges |
 | `edge_case_analyst` | `read-only` | `gpt-5.6-sol` | Edge-case and coverage-gap discovery: finds unconsidered cases and specifies expected behavior and test cases |
@@ -108,7 +108,7 @@ Common patterns:
 - Fast fix: `fast_coding_worker`, with `reviewer` when behavior or public API changes
 - Investigation before editing: `helper_worker` -> `coding_worker` or `fast_coding_worker`
 - Deep root-cause investigation: `forensic_analyst` -> `coding_worker` once a cause is confirmed; the parent saves the accepted report to a file when the user requests it
-- Documentation drift review: `doc_reviewer`
+- Documentation drift review: `doc_reviewer` returns a saveable report covering drift, obsolete docs to remove, and critical AI-confusing content; the parent routes confirmed updates and removals to `fast_coding_worker` or `coding_worker`, and pairs with `reviewer` when security or public API contract docs need code review as well
 - High-stakes or security-sensitive review: `reviewer`
 - Exploratory QA verification: `qa_engineer` after a feature lands or before a release; it exercises the change rather than reading it, and the parent routes confirmed findings to `coding_worker` or `fast_coding_worker`
 - Edge-case and coverage analysis: `edge_case_analyst` returns a report of uncovered cases with proposed specs and concrete test cases; the parent saves the report when the user requests it and routes confirmed cases to `coding_worker` or `fast_coding_worker`

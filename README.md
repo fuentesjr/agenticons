@@ -71,7 +71,7 @@ Standard review always routes to `reviewer`, including security-sensitive and hi
 | `fast_coding_worker` | `.codex/agents/fast_coding_worker.toml` | `gpt-5.6-luna` | Small localized edits and quick fixes |
 | `helper_worker` | `.codex/agents/helper_worker.toml` | `gpt-5.6-luna` | Read-only lookup, repo reconnaissance, docs/API lookup |
 | `forensic_analyst` | `.codex/agents/forensic_analyst.toml` | `gpt-5.6-sol` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
-| `doc_reviewer` | `.codex/agents/doc_reviewer.toml` | `gpt-5.6-luna` | Documentation correctness, stale docs, doc drift |
+| `doc_reviewer` | `.codex/agents/doc_reviewer.toml` | `gpt-5.6-luna` | Doc accuracy/drift, prune obsolete low-value docs, flag AI-confusing content |
 | `reviewer` | `.codex/agents/reviewer.toml` | `gpt-5.6-sol` | Standard code review |
 | `qa_engineer` | `.codex/agents/qa_engineer.toml` | `gpt-5.6-terra` | Exploratory QA: exercises changes end-to-end, probes regressions, performance, and rough edges |
 | `edge_case_analyst` | `.codex/agents/edge_case_analyst.toml` | `gpt-5.6-sol` | Find unconsidered edge cases and design gaps; specify expected behavior and concrete test cases |
@@ -104,7 +104,11 @@ Review documentation drift:
 Use agenticons.
 
 Review this branch for documentation drift. Check README, setup steps, CLI examples,
-configuration, API docs, and release notes against the implementation changes.
+configuration, API docs, agent instructions, and release notes against the
+implementation. Flag anything that could confuse AI agents as critical. Recommend
+removing obsolete low-value docs, not only rewriting them.
+Save the accepted report to docs/reviews/doc-drift.md.
+Then apply confirmed small doc fixes and removals with fast_coding_worker.
 ```
 
 Run a high-stakes review:
