@@ -1,13 +1,14 @@
 # Agenticons
+
 <img width="1672" height="941" alt="agenticons_ruby_banner" src="https://github.com/user-attachments/assets/91d20c4f-d80b-4069-934b-aa37f6d735c6" />
 
 *Pronounced uh-JEN-tih-conz — like Decepticons, not "agent icons."*
 
-Agenticons is a Codex skill package for users who want explicit, named subagent delegation for planning, implementation, review, documentation review, investigation, and QA verification work.
+Agenticons is a Codex skill package for users who want explicit, named subagent delegation for technical advising, planning, implementation, review, documentation review, investigation, and QA verification work.
 
 ## Why This Exists
 
-Codex can delegate work to subagents, but repeated manual routing is easy to make inconsistent. Agenticons packages a small routing skill plus named agent specs so a user can ask for delegation once and route it through a fixed, explicit set of named roles such as `planner`, `coding_worker`, `reviewer`, or `doc_reviewer`.
+Codex can delegate work to subagents, but repeated manual routing is easy to make inconsistent. Agenticons packages a small routing skill plus named agent specs so a user can ask for delegation once and route it through a fixed, explicit set of named roles such as `advisor`, `planner`, `coding_worker`, or `reviewer`.
 
 ```text
 Use agenticons.
@@ -66,7 +67,8 @@ Standard review always routes to `reviewer`, including security-sensitive and hi
 
 | Subagent | Agent file | Model | Use |
 |---|---|---:|---|
-| `planner` | `.codex/agents/planner.toml` | `gpt-5.6-sol` | Architecture, decomposition, sequencing, risk analysis |
+| `advisor` | `.codex/agents/advisor.toml` | `gpt-5.6-sol` | Principal-level technical direction, tradeoffs, reversibility, and decision consistency |
+| `planner` | `.codex/agents/planner.toml` | `gpt-5.6-sol` | Implementation decomposition, sequencing, risk analysis, and verification |
 | `coding_worker` | `.codex/agents/coding_worker.toml` | `gpt-5.6-terra` | Normal implementation, bug fixes, refactors |
 | `fast_coding_worker` | `.codex/agents/fast_coding_worker.toml` | `gpt-5.6-luna` | Small localized edits and quick fixes |
 | `helper_worker` | `.codex/agents/helper_worker.toml` | `gpt-5.6-luna` | Read-only lookup, repo reconnaissance, docs/API lookup |
@@ -75,6 +77,16 @@ Standard review always routes to `reviewer`, including security-sensitive and hi
 | `reviewer` | `.codex/agents/reviewer.toml` | `gpt-5.6-sol` | Standard code review |
 | `qa_engineer` | `.codex/agents/qa_engineer.toml` | `gpt-5.6-terra` | Exploratory QA: exercises changes end-to-end, probes regressions, performance, and rough edges |
 | `edge_case_analyst` | `.codex/agents/edge_case_analyst.toml` | `gpt-5.6-sol` | Find unconsidered edge cases and design gaps; specify expected behavior and concrete test cases |
+
+Challenge technical direction before planning:
+
+```text
+Use agenticons.
+
+We need to choose between extending our monolith and splitting billing into a
+service. Spawn advisor to assess the boundary, tradeoffs, reversibility, and
+operational blast radius. Do not produce an implementation plan yet.
+```
 
 Plan, implement, and review:
 

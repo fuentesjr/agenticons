@@ -1,6 +1,6 @@
 ---
 name: agenticons
-description: Selects and spawns named Codex custom subagents for planning, implementation, review, documentation review, deep investigation, exploratory QA verification, and helper work. Use when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing.
+description: Selects and spawns named Codex custom subagents for technical advising, planning, implementation, review, documentation review, deep investigation, exploratory QA verification, and helper work. Use when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing. Do not use when the user asks the parent to handle the work locally without subagents.
 ---
 
 # Agenticons
@@ -16,6 +16,7 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
 - Subagents must not delegate or route. They return findings/results to the parent orchestrator; their output is advisory until the parent accepts it.
 - Use only the model assigned in each installed Agenticons agent spec. Do not override a spawned Agenticons subagent to any model or provider not listed in this package's `.codex/agents/*.toml` files.
 - Use the exact subagent names from the installed Agenticons specs (`.codex/agents/*.toml` for repo-local installs or `~/.codex/agents/*.toml` for global installs):
+  - `advisor`
   - `planner`
   - `coding_worker`
   - `fast_coding_worker`
@@ -25,6 +26,7 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
   - `reviewer`
   - `qa_engineer`
   - `edge_case_analyst`
+- Principal-level technical direction advice uses `advisor`.
 - Standard review always uses `reviewer`.
 - Documentation drift review uses `doc_reviewer`.
 - Deep root-cause investigation uses `forensic_analyst`.
@@ -42,7 +44,8 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
 
 | Situation | Spawn |
 |---|---|
-| Complex feature, vague request, architectural tradeoff, phased plan | `planner` |
+| Technical direction with multiple credible approaches, cross-system boundaries, expensive reversals, conflicting recommendations, or trajectory drift | `advisor` |
+| Complex feature, vague request, accepted architecture, decomposition, or phased implementation plan | `planner` |
 | Normal code implementation, multi-file edit, bug fix, refactor | `coding_worker` |
 | Small localized edit, mechanical change, simple failing test | `fast_coding_worker` |
 | Read-only lookup, repo reconnaissance, dependency/API check, test triage, docs/API lookup | `helper_worker` |
@@ -51,6 +54,8 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
 | Normal correctness/security/maintainability review | `reviewer` |
 | Feature or release that should be exercised end-to-end, change-aware exploratory testing, performance regression probing, rough-edge hunting | `qa_engineer` |
 | Uncovered edge cases, missing acceptance criteria, design gaps, untested behavior, coverage holes | `edge_case_analyst` |
+
+Rule of thumb for direction: `advisor` challenges whether the technical decision is sound; `planner` turns an accepted direction into an implementation sequence; `reviewer` judges the resulting change. Use `advisor` only when the decision has enough leverage to justify a separate advisory pass.
 
 Rule of thumb for investigations: if you already know roughly where to look, use `helper_worker`; if the question is why something fails and nobody knows, use `forensic_analyst`.
 
@@ -63,6 +68,17 @@ Rule of thumb for escalation: start with the cheaper read-only agent (`helper_wo
 Rule of thumb for coverage: `reviewer` judges the change as written and `qa_engineer` runs it; `edge_case_analyst` asks what cases were never considered or tested and specifies them with concrete test cases.
 
 ## Dispatch patterns
+
+### Advise before planning
+
+Spawn `advisor` when implementation should wait for a principal-level technical decision.
+
+1. Give it the decision, constraints, relevant evidence, inherited decisions, and credible alternatives already identified.
+2. It returns a recommendation, tradeoffs, assumptions, reversibility analysis, and the evidence that would change its recommendation.
+3. The parent decides whether to accept the direction.
+4. If implementation is non-trivial, spawn `planner` with the accepted direction.
+
+Do not make `advisor` a mandatory gate. Reinvoke it only when new evidence, changed constraints, conflicting recommendations, or trajectory drift reopens the decision.
 
 ### Plan then implement
 
@@ -78,6 +94,7 @@ Rule of thumb for coverage: `reviewer` judges the change as written and `qa_engi
 ### Parallel review
 
 Spawn one or more `reviewer` agents with separate review angles only when useful, for example:
+
 - correctness and edge cases
 - security and permissions
 - tests and regressions
@@ -155,11 +172,11 @@ Expected output:
 <plan, patch summary, review findings, test results, evidence, open questions>
 ```
 
-## Consolidation
+## Output contract
 
 After subagents finish:
 
-- Summarize each subagent result briefly.
-- Call out conflicts between agents.
-- Identify the recommended next action.
-- Include verification status and remaining risks.
+- `output-results`: Summarize each subagent result briefly.
+- `output-conflicts`: Call out conflicts between agents.
+- `output-next-action`: Identify the recommended next action.
+- `output-verification`: Include verification status and remaining risks.

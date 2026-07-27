@@ -69,7 +69,8 @@ Preview writes with:
 
 | Task | Agent |
 |---|---|
-| Plan a complex feature or migration | `planner` |
+| Challenge a high-leverage technical direction before planning | `advisor` |
+| Plan a complex feature or migration after the direction is accepted | `planner` |
 | Implement normal code changes | `coding_worker` |
 | Make a small localized fix | `fast_coding_worker` |
 | Quick lookup or reconnaissance without editing | `helper_worker` |
@@ -80,6 +81,18 @@ Preview writes with:
 | Review auth, payments, data loss, or production-risk changes | `reviewer` |
 | Exercise a feature or release end-to-end before shipping | `qa_engineer` |
 | Find edge cases or missing test coverage nobody considered | `edge_case_analyst` |
+
+## When should I use `advisor` instead of `planner`?
+
+Use `advisor` to decide whether a technical direction is sound. Use it for
+multiple credible approaches, cross-system boundaries, expensive reversals,
+conflicting recommendations, or trajectory drift.
+
+Use `planner` after the parent accepts the direction. The planner converts that
+direction into an implementation sequence, affected-file map, risk list, and
+verification strategy.
+
+Do not run `advisor` as a mandatory gate for routine work.
 
 ## Can I use a different model for an Agenticons role?
 

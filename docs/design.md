@@ -2,7 +2,7 @@
 
 ## Goal
 
-Agenticons provides a small, explicit delegation layer for Codex. It gives users a fixed, named set of subagents for planning, implementation, review, documentation review, investigation, and QA verification without turning the parent agent into a heavy workflow engine.
+Agenticons provides a small, explicit delegation layer for Codex. It gives users a fixed, named set of subagents for technical advising, planning, implementation, review, documentation review, investigation, and QA verification without turning the parent agent into a heavy workflow engine.
 
 ## Non-Goals
 
@@ -25,6 +25,7 @@ agenticons/
     faq.md
   .codex/
     agents/
+      advisor.toml
       planner.toml
       coding_worker.toml
       fast_coding_worker.toml
@@ -74,7 +75,8 @@ Subagents must not delegate or route. They return findings/results to the parent
 
 | Agent | Sandbox | Model | Responsibility |
 |---|---|---:|---|
-| `planner` | `read-only` | `gpt-5.6-sol` | Architecture, decomposition, sequencing, risk analysis |
+| `advisor` | `read-only` | `gpt-5.6-sol` | Principal-level technical direction, tradeoffs, reversibility, and decision consistency |
+| `planner` | `read-only` | `gpt-5.6-sol` | Implementation decomposition, sequencing, risk analysis, and verification |
 | `coding_worker` | `workspace-write` | `gpt-5.6-terra` | Normal implementation, bug fixes, refactors |
 | `fast_coding_worker` | `workspace-write` | `gpt-5.6-luna` | Small localized edits and quick fixes |
 | `helper_worker` | `read-only` | `gpt-5.6-luna` | Quick lookup, repo reconnaissance, evidence gathering |
@@ -104,6 +106,7 @@ Agenticons keeps orchestration shallow. The parent agent delegates bounded subta
 
 Common patterns:
 
+- Advise before planning: `advisor` challenges a high-leverage technical decision; the parent accepts or rejects the direction before invoking `planner`
 - Plan then implement: `planner` -> `coding_worker` -> `reviewer`
 - Fast fix: `fast_coding_worker`, with `reviewer` when behavior or public API changes
 - Investigation before editing: `helper_worker` -> `coding_worker` or `fast_coding_worker`
