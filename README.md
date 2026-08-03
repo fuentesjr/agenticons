@@ -1,6 +1,7 @@
 # Agenticons
 
-<img width="1672" height="941" alt="agenticons_ruby_banner" src="https://github.com/user-attachments/assets/91d20c4f-d80b-4069-934b-aa37f6d735c6" />
+<img width="1672" height="941" alt="agenticons-readme" src="https://github.com/user-attachments/assets/733b5678-8ad6-491e-b521-2b65ec17f31f" />
+
 
 *Pronounced uh-JEN-tih-conz — like Decepticons, not "agent icons."*
 
