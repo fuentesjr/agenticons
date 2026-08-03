@@ -70,6 +70,7 @@ Preview writes with:
 | Task | Agent |
 |---|---|
 | Challenge a high-leverage technical direction before planning | `advisor` |
+| Explain recurring behavior and identify system leverage points | `systems_thinker` |
 | Plan a complex feature or migration after the direction is accepted | `planner` |
 | Implement normal code changes | `coding_worker` |
 | Make a small localized fix | `fast_coding_worker` |
@@ -93,6 +94,14 @@ direction into an implementation sequence, affected-file map, risk list, and
 verification strategy.
 
 Do not run `advisor` as a mandatory gate for routine work.
+
+## When should I use `systems_thinker`?
+
+Use `systems_thinker` when a behavior repeats over time and local fixes do not hold. It examines feedback loops, stocks and flows, delays, constraints, information flows, and relevant leverage points.
+
+Use `advisor` when you need a technical direction. Use `forensic_analyst` when you need evidence for a hard failure's cause.
+
+Do not use `systems_thinker` as a mandatory gate or for an isolated event without behavior-over-time evidence.
 
 ## Can I use a different model for an Agenticons role?
 

@@ -4,11 +4,13 @@
 
 *Pronounced uh-JEN-tih-conz — like Decepticons, not "agent icons."*
 
-Agenticons is a Codex skill package for users who want explicit, named subagent delegation for technical advising, planning, implementation, review, documentation review, investigation, and QA verification work.
+Agenticons is a Codex skill package for explicit, named subagent delegation. Its roles cover technical advising, systems thinking, planning, implementation, review, documentation, investigation, and QA verification.
 
 ## Why This Exists
 
-Codex can delegate work to subagents, but repeated manual routing is easy to make inconsistent. Agenticons packages a small routing skill plus named agent specs so a user can ask for delegation once and route it through a fixed, explicit set of named roles such as `advisor`, `planner`, `coding_worker`, or `reviewer`.
+Codex can delegate work to subagents, but repeated manual routing is easy to make inconsistent. Agenticons packages a small routing skill and named agent specs.
+
+Users request delegation once, then route work through fixed roles such as `advisor`, `systems_thinker`, `planner`, `coding_worker`, or `reviewer`.
 
 ```text
 Use agenticons.
@@ -68,6 +70,7 @@ Standard review always routes to `reviewer`, including security-sensitive and hi
 | Subagent | Agent file | Model | Use |
 |---|---|---:|---|
 | `advisor` | `.codex/agents/advisor.toml` | `gpt-5.6-sol` | Principal-level technical direction, tradeoffs, reversibility, and decision consistency |
+| `systems_thinker` | `.codex/agents/systems_thinker.toml` | `gpt-5.6-sol` | Recurring sociotechnical dynamics, feedback loops, leverage points, and intervention learning loops |
 | `planner` | `.codex/agents/planner.toml` | `gpt-5.6-sol` | Implementation decomposition, sequencing, risk analysis, and verification |
 | `coding_worker` | `.codex/agents/coding_worker.toml` | `gpt-5.6-terra` | Normal implementation, bug fixes, refactors |
 | `fast_coding_worker` | `.codex/agents/fast_coding_worker.toml` | `gpt-5.6-luna` | Small localized edits and quick fixes |
@@ -86,6 +89,18 @@ Use agenticons.
 We need to choose between extending our monolith and splitting billing into a
 service. Spawn advisor to assess the boundary, tradeoffs, reversibility, and
 operational blast radius. Do not produce an implementation plan yet.
+```
+
+Analyze a recurring system behavior:
+
+```text
+Use agenticons.
+
+Review queues clear after each release push, then grow again within two weeks.
+Adding reviewers helps briefly, but lead time and rework keep returning to their
+previous levels. Spawn systems_thinker to model the recurring dynamics, identify
+supported leverage points, and propose measurable intervention experiments.
+Do not edit files or produce an implementation plan.
 ```
 
 Plan, implement, and review:

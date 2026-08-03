@@ -1,6 +1,6 @@
 ---
 name: agenticons
-description: Selects and spawns named Codex custom subagents for technical advising, planning, implementation, review, documentation review, deep investigation, exploratory QA verification, and helper work. Use when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing. Do not use when the user asks the parent to handle the work locally without subagents.
+description: Selects and spawns named Codex custom subagents for technical advising, systems thinking, planning, implementation, review, documentation review, deep investigation, exploratory QA verification, and helper work. Use when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing. Do not use when the user asks the parent to handle the work locally without subagents.
 ---
 
 # Agenticons
@@ -17,6 +17,7 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
 - Use only the model assigned in each installed Agenticons agent spec. Do not override a spawned Agenticons subagent to any model or provider not listed in this package's `.codex/agents/*.toml` files.
 - Use the exact subagent names from the installed Agenticons specs (`.codex/agents/*.toml` for repo-local installs or `~/.codex/agents/*.toml` for global installs):
   - `advisor`
+  - `systems_thinker`
   - `planner`
   - `coding_worker`
   - `fast_coding_worker`
@@ -27,6 +28,7 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
   - `qa_engineer`
   - `edge_case_analyst`
 - Principal-level technical direction advice uses `advisor`.
+- Recurring sociotechnical dynamics and leverage-point analysis use `systems_thinker`.
 - Standard review always uses `reviewer`.
 - Documentation drift review uses `doc_reviewer`.
 - Deep root-cause investigation uses `forensic_analyst`.
@@ -45,6 +47,7 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
 | Situation | Spawn |
 |---|---|
 | Technical direction with multiple credible approaches, cross-system boundaries, expensive reversals, conflicting recommendations, or trajectory drift | `advisor` |
+| Recurring symptoms, fixes that do not stick, oscillation, drift, repeated queues, unintended consequences, or an explicit systems-thinking lens | `systems_thinker` |
 | Complex feature, vague request, accepted architecture, decomposition, or phased implementation plan | `planner` |
 | Normal code implementation, multi-file edit, bug fix, refactor | `coding_worker` |
 | Small localized edit, mechanical change, simple failing test | `fast_coding_worker` |
@@ -56,6 +59,8 @@ Use this skill as a lean dispatcher when the user explicitly asks for agenticons
 | Uncovered edge cases, missing acceptance criteria, design gaps, untested behavior, coverage holes | `edge_case_analyst` |
 
 Rule of thumb for direction: `advisor` challenges whether the technical decision is sound; `planner` turns an accepted direction into an implementation sequence; `reviewer` judges the resulting change. Use `advisor` only when the decision has enough leverage to justify a separate advisory pass.
+
+Rule of thumb for systems: `systems_thinker` explains what structure keeps producing a recurring behavior; `advisor` recommends a technical direction; `forensic_analyst` proves the cause of a hard failure. Use `systems_thinker` only when behavior over time and system structure are the question, not as a mandatory gate or a new label for one-off root-cause analysis.
 
 Rule of thumb for investigations: if you already know roughly where to look, use `helper_worker`; if the question is why something fails and nobody knows, use `forensic_analyst`.
 
@@ -79,6 +84,17 @@ Spawn `advisor` when implementation should wait for a principal-level technical 
 4. If implementation is non-trivial, spawn `planner` with the accepted direction.
 
 Do not make `advisor` a mandatory gate. Reinvoke it only when new evidence, changed constraints, conflicting recommendations, or trajectory drift reopens the decision.
+
+### Diagnose recurring dynamics
+
+Spawn `systems_thinker` when the user requests a systems-thinking lens or when an explicitly delegated task asks why a pattern persists over time.
+
+1. Give it the observed behavior over time, proposed system boundary, available evidence, constraints, and prior interventions.
+2. It returns a standalone report with an evidence-based system map, relevant leverage points, reversible intervention experiments, and measurement loops.
+3. The parent validates the assumptions and decides which leverage point, if any, to pursue.
+4. Route an open technical decision to `advisor`, an unproven failure cause to `forensic_analyst`, or an accepted implementation direction to `planner` or a worker.
+
+Do not require `systems_thinker` for every recurring problem. Use it when structural analysis can change the intervention, and ask it to say when the evidence does not support a systems model.
 
 ### Plan then implement
 

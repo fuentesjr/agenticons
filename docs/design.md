@@ -2,7 +2,9 @@
 
 ## Goal
 
-Agenticons provides a small, explicit delegation layer for Codex. It gives users a fixed, named set of subagents for technical advising, planning, implementation, review, documentation review, investigation, and QA verification without turning the parent agent into a heavy workflow engine.
+Agenticons provides a small, explicit delegation layer for Codex. It gives users named subagents for technical advising, systems thinking, planning, implementation, review, documentation review, investigation, and QA verification.
+
+The fixed roster keeps routing explicit without turning the parent agent into a workflow engine.
 
 ## Non-Goals
 
@@ -26,6 +28,7 @@ agenticons/
   .codex/
     agents/
       advisor.toml
+      systems_thinker.toml
       planner.toml
       coding_worker.toml
       fast_coding_worker.toml
@@ -76,6 +79,7 @@ Subagents must not delegate or route. They return findings/results to the parent
 | Agent | Sandbox | Model | Responsibility |
 |---|---|---:|---|
 | `advisor` | `read-only` | `gpt-5.6-sol` | Principal-level technical direction, tradeoffs, reversibility, and decision consistency |
+| `systems_thinker` | `read-only` | `gpt-5.6-sol` | Recurring sociotechnical dynamics, feedback loops, leverage points, and intervention learning loops |
 | `planner` | `read-only` | `gpt-5.6-sol` | Implementation decomposition, sequencing, risk analysis, and verification |
 | `coding_worker` | `workspace-write` | `gpt-5.6-terra` | Normal implementation, bug fixes, refactors |
 | `fast_coding_worker` | `workspace-write` | `gpt-5.6-luna` | Small localized edits and quick fixes |
@@ -107,6 +111,7 @@ Agenticons keeps orchestration shallow. The parent agent delegates bounded subta
 Common patterns:
 
 - Advise before planning: `advisor` challenges a high-leverage technical decision; the parent accepts or rejects the direction before invoking `planner`
+- Diagnose recurring dynamics: `systems_thinker` models the structure behind persistent behavior; the parent accepts a leverage point before routing further work
 - Plan then implement: `planner` -> `coding_worker` -> `reviewer`
 - Fast fix: `fast_coding_worker`, with `reviewer` when behavior or public API changes
 - Investigation before editing: `helper_worker` -> `coding_worker` or `fast_coding_worker`
@@ -144,6 +149,28 @@ go vet ./...
 ```
 
 `.github/workflows/validate.yml` runs all three commands on every push and pull request.
+
+## Systems Thinker Behavioral Check
+
+Run this check after changing the `systems_thinker` prompt or model. Complete it before release so semantic drift is detected within the same change.
+
+1. Start a fresh Codex session from an empty temporary directory.
+2. Provide a raw, dated evidence packet showing a managed roster diverging from its source over time.
+3. Include roster snapshots, update-mechanism excerpts, and observed file types.
+4. Do not include a suspected cause, proposed fix, this rubric, or the Agenticons repository.
+5. Ask Agenticons to spawn `systems_thinker` for a read-only analysis of the recurring divergence.
+6. Score the report after the subagent finishes.
+
+The report passes when it:
+
+- states whether the evidence supports a systems analysis
+- separates observations, inferences, assumptions, and unknowns
+- models only supported stocks, flows, feedback loops, constraints, and delays
+- uses relevant leverage points without listing Meadows' full taxonomy by default
+- proposes a reversible intervention with indicators, detection delay, review threshold, and adaptation path
+- identifies the correct sibling role for technical decisions or unresolved failure causes
+
+The report fails when it invents human motives, substitutes generic systems vocabulary for a causal model, or jumps directly to a one-off fix.
 
 ## Installation Script
 
