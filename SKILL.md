@@ -5,194 +5,99 @@ description: Selects and spawns named Codex custom subagents for technical advis
 
 # Agenticons
 
-Use this skill as a lean dispatcher when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing. Your job is to select and spawn the right named custom subagent for the task, then consolidate results.
+You've been invoked as a lean dispatcher. Select and spawn the right named
+custom subagent, then consolidate results.
 
 ## Hard rules
 
-- Dispatch through subagents only when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing.
-- Honor escape hatches exactly. If the user says `no subagents`, `do not use subagents`, `handle locally`, `do this yourself`, or `do not use agenticons`, do not spawn subagents for that request.
-- Dispatch to named subagents. Do not merely recommend models.
-- The parent agent is the orchestrator and DRA (Directly Responsible Agent). As DRA, the parent remains accountable for the project outcome: it owns routing, scope, sequencing, conflict resolution, verification, deciding whether to accept subagent output, and the final response.
-- Subagents must not delegate or route. They return findings/results to the parent orchestrator; their output is advisory until the parent accepts it.
-- Use only the model assigned in each installed Agenticons agent spec. Do not override a spawned Agenticons subagent to any model or provider not listed in this package's `.codex/agents/*.toml` files.
-- Use the exact subagent names from the installed Agenticons specs (`.codex/agents/*.toml` for repo-local installs or `~/.codex/agents/*.toml` for global installs):
-  - `advisor`
-  - `systems_thinker`
-  - `planner`
-  - `coding_worker`
-  - `fast_coding_worker`
-  - `helper_worker`
-  - `forensic_analyst`
-  - `doc_reviewer`
-  - `reviewer`
-  - `qa_engineer`
-  - `edge_case_analyst`
-- Principal-level technical direction advice uses `advisor`.
-- Recurring sociotechnical dynamics and leverage-point analysis use `systems_thinker`.
-- Standard review always uses `reviewer`.
-- Documentation drift review uses `doc_reviewer`.
-- Deep root-cause investigation uses `forensic_analyst`.
-- Exploratory QA verification uses `qa_engineer`.
-- Edge-case and coverage analysis uses `edge_case_analyst`.
-- Keep orchestration shallow: parent coordinates; subagents do focused work.
-- Avoid recursive delegation unless the user explicitly asks for it.
-- Prefer one subagent for simple work, two to four subagents for parallel review or independent implementation slices.
-- Every spawned subagent must receive a concrete task, scope, expected output, and constraints.
-- Assign disjoint file or feature ownership to implementation agents when more than one worker may edit files.
-- Ask subagents for evidence: file paths, symbols, commands run, test results, and unresolved risks.
-- Do not let implementation agents silently expand scope.
+- Dispatch only on explicit agenticons/subagents/delegation/parallel/model-tier
+  asks. Escape hatches win: `no subagents`, `do not use subagents`,
+  `handle locally`, `do this yourself`, `do not use agenticons`.
+- Dispatch to named subagents (do not merely recommend models). Exact names
+  from installed Agenticons specs (`.codex/agents/*.toml` or
+  `~/.codex/agents/*.toml`): `advisor`, `systems_thinker`, `planner`,
+  `coding_worker`, `fast_coding_worker`, `helper_worker`, `forensic_analyst`,
+  `doc_reviewer`, `reviewer`, `qa_engineer`, `edge_case_analyst`.
+- Parent is orchestrator and DRA: routing, scope, sequencing, conflicts,
+  verification, accept/reject of advisory subagent output, final response.
+- Subagents must not delegate. Use only the model in each agent spec — no
+  ad-hoc override to models outside this package's specs.
+- Keep orchestration shallow. Prefer one subagent for simple work, 2–4 for
+  parallel independent slices. Give each a concrete task, scope, expected
+  output, and constraints. Disjoint ownership when multiple workers edit.
+- Ask for evidence (paths, commands, tests, risks). No silent scope expansion.
 
 ## Routing table
 
 | Situation | Spawn |
 |---|---|
-| Technical direction with multiple credible approaches, cross-system boundaries, expensive reversals, conflicting recommendations, or trajectory drift | `advisor` |
-| Recurring symptoms, fixes that do not stick, oscillation, drift, repeated queues, unintended consequences, or an explicit systems-thinking lens | `systems_thinker` |
-| Complex feature, vague request, accepted architecture, decomposition, or phased implementation plan | `planner` |
-| Normal code implementation, multi-file edit, bug fix, refactor | `coding_worker` |
+| Technical direction with multiple approaches, cross-system boundaries, expensive reversals, conflicting recommendations, or trajectory drift | `advisor` |
+| Recurring symptoms, fixes that do not stick, oscillation, drift, queues, unintended consequences, or explicit systems-thinking lens | `systems_thinker` |
+| Complex/vague feature, accepted architecture, decomposition, phased plan | `planner` |
+| Normal implementation, multi-file edit, bug fix, refactor | `coding_worker` |
 | Small localized edit, mechanical change, simple failing test | `fast_coding_worker` |
-| Read-only lookup, repo reconnaissance, dependency/API check, test triage, docs/API lookup | `helper_worker` |
-| Unclear root cause, intermittent or hard-to-reproduce failure, regression with no obvious cause, cross-system failure | `forensic_analyst` |
-| Documentation accuracy/drift, obsolete low-value docs to remove, AI-confusing docs, changelog coverage | `doc_reviewer` |
-| Normal correctness/security/maintainability review | `reviewer` |
-| Feature or release that should be exercised end-to-end, change-aware exploratory testing, performance regression probing, rough-edge hunting | `qa_engineer` |
-| Uncovered edge cases, missing acceptance criteria, design gaps, untested behavior, coverage holes | `edge_case_analyst` |
+| Read-only lookup, recon, dependency/API check, test triage | `helper_worker` |
+| Unclear root cause, intermittent failure, no-obvious-cause regression, cross-system failure | `forensic_analyst` |
+| Docs accuracy/drift, obsolete docs, AI-confusing docs, changelog coverage | `doc_reviewer` |
+| Correctness/security/maintainability review | `reviewer` |
+| End-to-end exercise of a feature/release, exploratory QA, performance rough edges | `qa_engineer` |
+| Uncovered edge cases, missing acceptance criteria, untested behavior | `edge_case_analyst` |
 
-Rule of thumb for direction: `advisor` challenges whether the technical decision is sound; `planner` turns an accepted direction into an implementation sequence; `reviewer` judges the resulting change. Use `advisor` only when the decision has enough leverage to justify a separate advisory pass.
+**Boundaries (non-obvious pairs):** `advisor` = is the technical decision
+sound; `planner` = sequence an accepted direction; `reviewer` = judge the
+change. `systems_thinker` = structure over time; `forensic_analyst` = prove
+one hard failure. `helper_worker` when you know roughly where to look;
+`forensic_analyst` when nobody does. `reviewer` reads the change; `qa_engineer`
+runs it. `doc_reviewer` audits docs vs code (read-only); not a security
+sign-off — pair with `reviewer` for threat-model/API contracts. Escalate
+cheap recon → forensic only when needed. `edge_case_analyst` finds cases
+never considered; `reviewer`/`qa_engineer` judge or run what exists.
 
-Rule of thumb for systems: `systems_thinker` explains what structure keeps producing a recurring behavior; `advisor` recommends a technical direction; `forensic_analyst` proves the cause of a hard failure. Use `systems_thinker` only when behavior over time and system structure are the question, not as a mandatory gate or a new label for one-off root-cause analysis.
+## Shared dispatch loop
 
-Rule of thumb for investigations: if you already know roughly where to look, use `helper_worker`; if the question is why something fails and nobody knows, use `forensic_analyst`.
+For every pattern: brief the subagent → receive report/result → parent decides
+accept/redo/stop → route confirmed follow-ups to workers (`coding_worker` /
+`fast_coding_worker`). Report-producing roles (`forensic_analyst`,
+`edge_case_analyst`, `doc_reviewer`, `systems_thinker`) are read-only: if the
+user asks to save the report, write the accepted report verbatim; otherwise
+fold findings into your response.
 
-Rule of thumb for verification: `reviewer` reads the change; `qa_engineer` runs it. Use `qa_engineer` when confidence requires executing the software, not just reviewing the diff.
+**Pattern one-liners (non-obvious only):**
 
-Rule of thumb for documentation: use `helper_worker` to look up or summarize what existing docs say; use `doc_reviewer` to audit whether docs match implementation (drift, gaps, overpromises), to recommend removing obsolete low-value docs, and to flag anything that could confuse AI agents. Prefer delete/archive over leaving agent-misleading prose. `doc_reviewer` does not edit files.
-
-Rule of thumb for escalation: start with the cheaper read-only agent (`helper_worker`) and escalate to `forensic_analyst` only when recon does not surface the cause. Match model tier to task difficulty; do not pay for capability the task does not need. For security/threat-model docs or precise public API contracts, pair `doc_reviewer` with `reviewer` on the related code — do not treat doc drift review alone as a security or correctness sign-off.
-
-Rule of thumb for coverage: `reviewer` judges the change as written and `qa_engineer` runs it; `edge_case_analyst` asks what cases were never considered or tested and specifies them with concrete test cases.
-
-## Dispatch patterns
-
-### Advise before planning
-
-Spawn `advisor` when implementation should wait for a principal-level technical decision.
-
-1. Give it the decision, constraints, relevant evidence, inherited decisions, and credible alternatives already identified.
-2. It returns a recommendation, tradeoffs, assumptions, reversibility analysis, and the evidence that would change its recommendation.
-3. The parent decides whether to accept the direction.
-4. If implementation is non-trivial, spawn `planner` with the accepted direction.
-
-Do not make `advisor` a mandatory gate. Reinvoke it only when new evidence, changed constraints, conflicting recommendations, or trajectory drift reopens the decision.
-
-### Diagnose recurring dynamics
-
-Spawn `systems_thinker` when the user requests a systems-thinking lens or when an explicitly delegated task asks why a pattern persists over time.
-
-1. Give it the observed behavior over time, proposed system boundary, available evidence, constraints, and prior interventions.
-2. It returns a standalone report with an evidence-based system map, relevant leverage points, reversible intervention experiments, and measurement loops.
-3. The parent validates the assumptions and decides which leverage point, if any, to pursue.
-4. Route an open technical decision to `advisor`, an unproven failure cause to `forensic_analyst`, or an accepted implementation direction to `planner` or a worker.
-
-Do not require `systems_thinker` for every recurring problem. Use it when structural analysis can change the intervention, and ask it to say when the evidence does not support a systems model.
-
-### Plan then implement
-
-1. Spawn `planner` to produce a short implementation plan, risks, files likely touched, and verification strategy.
-2. Spawn `coding_worker` with the accepted plan.
-3. Spawn `reviewer` to review the diff and test evidence.
-
-### Fast fix
-
-1. Spawn `fast_coding_worker` for a tightly scoped fix.
-2. Spawn `reviewer` only if the change affects behavior, tests, security, data, or public API.
-
-### Parallel review
-
-Spawn one or more `reviewer` agents with separate review angles only when useful, for example:
-
-- correctness and edge cases
-- security and permissions
-- tests and regressions
-
-Use `reviewer` for normal review, including security-sensitive review.
-
-### Documentation drift review
-
-Spawn `doc_reviewer` when code behavior, public APIs, installation steps, commands, configuration, examples, user-facing workflows, or agent-facing instructions may have changed — or when docs may be obsolete, redundant, or confusing to AI agents.
-
-1. Give it the change scope (branch, commits, PR, or feature) and the docs surfaces to check when known (README, install, CLI, config, API reference, examples, changelog, agent/skill instruction files).
-2. It works change-aware: maps user- and agent-facing changes to docs, prefers implementation evidence over prose, treats AI-confusing docs as critical, recommends remove/archive for obsolete low-value material, and returns a standalone Markdown report (summary, scope, ranked findings with update/remove actions, prune candidates, current/verified, not covered, next steps).
-3. If the user asks to save the report, write the accepted report verbatim to the requested path. The reviewer is read-only and does not write files.
-4. Route confirmed doc updates and removals to `fast_coding_worker` for small localized edits/deletes, or `coding_worker` for larger multi-file rewrites or cleanups.
-5. When the same change also needs code correctness or security review (especially threat-model or public API contract docs), spawn `reviewer` on the related code in parallel or after; do not substitute `doc_reviewer` for `reviewer`.
-
-### Investigation before editing
-
-Spawn `helper_worker` first when you know roughly where to look but need the correct files, runtime path, or API behavior confirmed. Then hand the evidence to `coding_worker` or `fast_coding_worker`.
-
-### Deep investigation
-
-Spawn `forensic_analyst` when the question is why something fails and nobody knows: unclear root cause, intermittent or hard-to-reproduce failures, regressions with no obvious cause, or failures spanning systems.
-
-1. Give it the symptom, scope, and all evidence gathered so far.
-2. It returns a standalone Markdown report: summary, symptom and scope, evidence, ranked hypotheses, causal analysis, reproduction, recommended next steps, and open questions.
-3. If the user asks to save the report, write the accepted report verbatim to the requested path. The analyst is read-only and does not write files.
-4. Hand the confirmed cause to `coding_worker` or `fast_coding_worker` for the fix.
-
-### Exploratory QA verification
-
-Spawn `qa_engineer` after a feature lands or before a release, when the change should be exercised rather than read: end-to-end behavior, regressions in adjacent features, performance changes, and rough edges a user would hit.
-
-1. Give it the change scope (branch, commits, or feature), how to build and run the software, and any environment details it needs.
-2. It inspects what changed, runs targeted scenarios, and returns a standalone Markdown verification report: verdict, scenarios executed, findings with reproduction steps, performance notes, rough edges, and what was not covered.
-3. It must not modify existing source, tests, or docs; any scratch artifacts it creates are listed in the report.
-4. Route confirmed findings to `coding_worker` or `fast_coding_worker`, including a regression test for each confirmed bug.
-
-### Edge-case and coverage analysis
-
-Spawn `edge_case_analyst` to find cases nobody considered and specify them: missing acceptance criteria, design edge cases, and untested behavior across input, failure, concurrency, and security dimensions.
-
-1. Give it the feature, change scope, or area to analyze, plus where the existing tests and specs live so it can tell covered from uncovered.
-2. It returns a standalone Markdown report: uncovered cases ranked by risk, each with scenario, expected behavior, a concrete test case, and coverage evidence, plus proposed acceptance criteria and open questions.
-3. If the user asks to save the report, write the accepted report verbatim to the requested path. The analyst is read-only and does not write files.
-4. Route confirmed cases to `coding_worker` or `fast_coding_worker` to add the tests and any fix.
+- **Advise before planning** — `advisor` then optional `planner`; not a
+  mandatory gate; reinvoke only when new evidence reopens the decision.
+- **Diagnose recurring dynamics** — `systems_thinker` when structure over
+  time is the question; then advisor/forensic/planner as appropriate.
+- **Plan then implement** — `planner` → `coding_worker` → `reviewer`.
+- **Fast fix** — `fast_coding_worker`; add `reviewer` if behavior/API/security.
+- **Parallel review** — multiple `reviewer` angles only when useful
+  (correctness / security / regressions).
+- **Documentation drift** — `doc_reviewer` change-aware; route edits to workers;
+  parallel `reviewer` for security/API docs.
+- **Investigation before editing** — `helper_worker` then a worker.
+- **Deep investigation** — `forensic_analyst` then worker for the fix.
+- **Exploratory QA** — `qa_engineer` after land / before release; route bugs
+  with regression tests to workers.
+- **Edge-case / coverage** — `edge_case_analyst` then workers for tests/fixes.
 
 ## User-facing labels
 
-- Maintain a meaningful local label for every spawned subagent in user-facing updates and summaries.
-- Use labels in the form `<role>: <task or scope>`, for example `helper_worker: PackageDependencyPressure readiness review`.
-- Treat tool-generated nicknames and agent ids as traceability metadata only. If needed, put them after the semantic label in parentheses; do not use them as the primary name.
-- When consolidating results, refer to subagents by their semantic labels so readers can tell what each agent was responsible for without decoding generated nicknames.
+Label every spawn as `<role>: <task or scope>`. Tool ids are traceability only.
 
 ## Subagent prompt template
 
-When spawning a subagent, include:
-
 ```text
 Agent: <name>
-
-Task:
-<single concrete task>
-
-Scope:
-<files, feature area, branch, issue, or PR range>
-
-Constraints:
-<what not to change, style rules, compatibility requirements, performance/security limits>
-
-Ownership:
-<files or feature area this subagent owns; note any files/areas it must avoid>
-
-Expected output:
-<plan, patch summary, review findings, test results, evidence, open questions>
+Task: <single concrete task>
+Scope: <files, feature, branch, issue, or PR>
+Constraints: <what not to change; limits>
+Ownership: <owned files/areas; avoid>
+Expected output: <plan, findings, tests, evidence, open questions>
 ```
 
 ## Output contract
 
-After subagents finish:
-
-- `output-results`: Summarize each subagent result briefly.
-- `output-conflicts`: Call out conflicts between agents.
-- `output-next-action`: Identify the recommended next action.
-- `output-verification`: Include verification status and remaining risks.
+- `output-results`: brief per-subagent summary
+- `output-conflicts`: conflicts between agents
+- `output-next-action`: recommended next action
+- `output-verification`: verification status and remaining risks
