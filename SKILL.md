@@ -1,6 +1,6 @@
 ---
 name: agenticons
-description: Selects and spawns named Codex custom subagents for technical advising, systems thinking, planning, implementation, review, documentation review, deep investigation, exploratory QA verification, and helper work. Use when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing. Do not use when the user asks the parent to handle the work locally without subagents.
+description: Selects and spawns named Codex custom subagents for technical advising, systems thinking, planning, implementation, review, documentation review, deep investigation, exploratory QA verification, observability engineering, and helper work. Use when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing. Do not use when the user asks the parent to handle the work locally without subagents.
 ---
 
 # Agenticons
@@ -27,6 +27,7 @@ custom subagent, then consolidate results.
   - `reviewer`
   - `qa_engineer`
   - `edge_case_analyst`
+  - `observability_engineer`
 - Parent is orchestrator and DRA: routing, scope, sequencing, conflicts,
   verification, accept/reject of advisory subagent output, final response.
 - Subagents must not delegate. Use only the model in each agent spec — no
@@ -51,6 +52,7 @@ custom subagent, then consolidate results.
 | Correctness/security/maintainability review | `reviewer` |
 | End-to-end exercise of a feature/release, exploratory QA, performance rough edges | `qa_engineer` |
 | Uncovered edge cases, missing acceptance criteria, untested behavior | `edge_case_analyst` |
+| Instrumentation/wide-event review, OpenTelemetry strategy, SLO and burn-alert design, alert-fatigue cleanup, sampling/pipeline cost, observability for CI/CD, frontend, or LLM apps | `observability_engineer` |
 
 **Boundaries (non-obvious pairs):** `advisor` = is the technical decision
 sound; `planner` = sequence an accepted direction; `reviewer` = judge the
@@ -61,6 +63,10 @@ runs it. `doc_reviewer` audits docs vs code (read-only); not a security
 sign-off — pair with `reviewer` for threat-model/API contracts. Escalate
 cheap recon → forensic only when needed. `edge_case_analyst` finds cases
 never considered; `reviewer`/`qa_engineer` judge or run what exists.
+`observability_engineer` designs telemetry, SLOs, and analysis workflows;
+`forensic_analyst` proves one failure with them; `qa_engineer` runs the
+feature, `observability_engineer` judges what its telemetry reveals;
+observability governance (business case, build-vs-buy, vendors) → `advisor`.
 
 ## Shared dispatch loop
 
@@ -88,6 +94,9 @@ fold findings into your response.
 - **Exploratory QA** — `qa_engineer` after land / before release; route bugs
   with regression tests to workers.
 - **Edge-case / coverage** — `edge_case_analyst` then workers for tests/fixes.
+- **Observability design / review** — `observability_engineer` reports on
+  instrumentation, SLOs, and telemetry cost (may create scratch artifacts);
+  route confirmed instrumentation edits to workers.
 
 ## User-facing labels
 

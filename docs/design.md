@@ -2,7 +2,7 @@
 
 ## Goal
 
-Agenticons provides a small, explicit delegation layer for Codex. It gives users named subagents for technical advising, systems thinking, planning, implementation, review, documentation review, investigation, and QA verification.
+Agenticons provides a small, explicit delegation layer for Codex. It gives users named subagents for technical advising, systems thinking, planning, implementation, review, documentation review, investigation, QA verification, and observability engineering.
 
 The fixed roster keeps routing explicit without turning the parent agent into a workflow engine.
 
@@ -38,6 +38,7 @@ agenticons/
       reviewer.toml
       qa_engineer.toml
       edge_case_analyst.toml
+      observability_engineer.toml
   .github/
     workflows/
       validate.yml
@@ -89,6 +90,7 @@ Subagents must not delegate or route. They return findings/results to the parent
 | `reviewer` | `read-only` | `gpt-5.6-sol` | Standard correctness, security, maintainability, regression review |
 | `qa_engineer` | `workspace-write` | `gpt-5.6-terra` | Exploratory QA verification: exercises changes end-to-end, probes regressions, performance, and user-facing rough edges |
 | `edge_case_analyst` | `read-only` | `gpt-5.6-sol` | Edge-case and coverage-gap discovery: finds unconsidered cases and specifies expected behavior and test cases |
+| `observability_engineer` | `workspace-write` | `gpt-5.6-terra` | Instrumentation and wide-event review, OpenTelemetry strategy, SLO and burn-alert design, telemetry sampling and pipeline cost; scratch artifacts only, production edits routed to workers |
 
 ## Agent Spec Contract
 
@@ -120,6 +122,7 @@ Common patterns:
 - High-stakes or security-sensitive review: `reviewer`
 - Exploratory QA verification: `qa_engineer` after a feature lands or before a release; it exercises the change rather than reading it, and the parent routes confirmed findings to `coding_worker` or `fast_coding_worker`
 - Edge-case and coverage analysis: `edge_case_analyst` returns a report of uncovered cases with proposed specs and concrete test cases; the parent saves the report when the user requests it and routes confirmed cases to `coding_worker` or `fast_coding_worker`
+- Observability design and review: `observability_engineer` returns a saveable report on instrumentation, SLO/alerting design, and telemetry cost; it may create scratch scripts or configs to demonstrate a recommendation but must not modify existing source, and the parent routes confirmed instrumentation edits to `coding_worker` or `fast_coding_worker`
 
 Parallel writable work should use disjoint ownership. Parallel review work should use distinct review angles such as correctness, security, and regression risk.
 
@@ -171,6 +174,33 @@ The report passes when it:
 - identifies the correct sibling role for technical decisions or unresolved failure causes
 
 The report fails when it invents human motives, substitutes generic systems vocabulary for a causal model, or jumps directly to a one-off fix.
+
+## Observability Engineer Behavioral Check
+
+Run this check after changing the `observability_engineer` prompt or model. Complete it before release so semantic drift is detected within the same change.
+
+Run two scenarios, each in its own fresh Codex session:
+
+- Brownfield: a small service repository with partial, metrics-heavy instrumentation and a handful of static threshold alerts.
+- Greenfield: a small service repository with no instrumentation at all.
+
+For each scenario:
+
+1. Ask Agenticons to spawn `observability_engineer` to review instrumentation and alerting before a release (brownfield) or to propose an instrumentation strategy (greenfield).
+2. Do not include this rubric or the Agenticons repository in the session.
+3. Score the report after the subagent finishes.
+
+The report passes when it:
+
+- assesses event width and trace coverage against OpenTelemetry conventions rather than proposing more dashboards or more metrics
+- recommends unified wide-event storage for code the team owns rather than building out parallel metrics, logging, and tracing silos
+- proposes SLO-based burn alerts tied to user-facing symptoms and names specific threshold alerts to delete (brownfield) or establishes SLOs before any threshold alerts exist (greenfield)
+- addresses telemetry volume and sampling with a concrete strategy, not "collect everything"
+- separates evidence-backed findings from assumptions and names what evidence would change the conclusion
+- lists every scratch artifact it created and routes production instrumentation edits to the parent for a worker
+- flags governance questions (build versus buy, vendor selection, budget ownership) as `advisor` territory instead of answering them
+
+The report fails when it edits existing source, recommends tooling changes without evidence, treats three-pillars siloing as the target architecture, or produces generic monitoring advice unmoored from the repository's actual telemetry. In the greenfield scenario, the report additionally fails when it produces a boilerplate OpenTelemetry plan not grounded in the repository's frameworks and request paths, proposes instrumenting everything with no volume or sampling consideration, or selects a vendor or storage backend itself instead of flagging that choice for `advisor`.
 
 ## Installation Script
 

@@ -82,6 +82,7 @@ Preview writes with:
 | Review auth, payments, data loss, or production-risk changes | `reviewer` |
 | Exercise a feature or release end-to-end before shipping | `qa_engineer` |
 | Find edge cases or missing test coverage nobody considered | `edge_case_analyst` |
+| Review instrumentation, design SLOs and burn alerts, or control telemetry cost | `observability_engineer` |
 
 ## When should I use `advisor` instead of `planner`?
 
@@ -102,6 +103,12 @@ Use `systems_thinker` when a behavior repeats over time and local fixes do not h
 Use `advisor` when you need a technical direction. Use `forensic_analyst` when you need evidence for a hard failure's cause.
 
 Do not use `systems_thinker` as a mandatory gate or for an isolated event without behavior-over-time evidence.
+
+## When should I use `observability_engineer`?
+
+Use `observability_engineer` for instrumentation and wide-event review, OpenTelemetry strategy, SLO and burn-alert design, alert-fatigue cleanup, telemetry sampling and pipeline cost, and observability for CI/CD, frontend/mobile, or LLM applications. Its practice follows Observability Engineering, 2nd edition. It may create scratch scripts or configs to demonstrate a recommendation, but production instrumentation edits go to `coding_worker` or `fast_coding_worker`.
+
+Use `forensic_analyst` to prove the cause of one hard failure; `observability_engineer` designs the telemetry that makes such debugging possible. Use `qa_engineer` to exercise a feature end-to-end; `observability_engineer` judges what its telemetry reveals. Observability governance questions — business case, build versus buy, vendor selection — belong to `advisor`.
 
 ## Can I use a different model for an Agenticons role?
 

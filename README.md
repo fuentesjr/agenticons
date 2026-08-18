@@ -5,7 +5,7 @@
 
 *Pronounced uh-JEN-tih-conz — like Decepticons, not "agent icons."*
 
-Agenticons is a Codex skill package for explicit, named subagent delegation. Its roles cover technical advising, systems thinking, planning, implementation, review, documentation, investigation, and QA verification.
+Agenticons is a Codex skill package for explicit, named subagent delegation. Its roles cover technical advising, systems thinking, planning, implementation, review, documentation, investigation, QA verification, and observability engineering.
 
 ## Why This Exists
 
@@ -81,6 +81,7 @@ Standard review always routes to `reviewer`, including security-sensitive and hi
 | `reviewer` | `.codex/agents/reviewer.toml` | `gpt-5.6-sol` | Standard code review |
 | `qa_engineer` | `.codex/agents/qa_engineer.toml` | `gpt-5.6-terra` | Exploratory QA: exercises changes end-to-end, probes regressions, performance, and rough edges |
 | `edge_case_analyst` | `.codex/agents/edge_case_analyst.toml` | `gpt-5.6-sol` | Find unconsidered edge cases and design gaps; specify expected behavior and concrete test cases |
+| `observability_engineer` | `.codex/agents/observability_engineer.toml` | `gpt-5.6-terra` | Instrumentation and wide-event review, OpenTelemetry strategy, SLO and burn-alert design, telemetry sampling/pipeline cost, observability for CI/CD, frontend, and LLM apps |
 
 Challenge technical direction before planning:
 
@@ -168,6 +169,18 @@ We are adding coupon stacking to checkout. Spawn edge_case_analyst to find the
 edge cases and missing acceptance criteria we have not considered (expired
 coupons, conflicting discounts, rounding, currency, concurrency) and return a
 report with a concrete test case for each. Do not edit code.
+```
+
+Review instrumentation and alerting before a launch:
+
+```text
+Use agenticons.
+
+We are taking the payments service to GA next month. Spawn observability_engineer
+to review its instrumentation and alerting: event width and trace coverage against
+OpenTelemetry conventions, SLO and burn-alert design for checkout, threshold
+alerts we should delete, and expected telemetry volume with a sampling strategy.
+Return a report; route any instrumentation edits back to me for coding_worker.
 ```
 
 For more detail, see [docs/faq.md](docs/faq.md) and [docs/design.md](docs/design.md).
