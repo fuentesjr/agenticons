@@ -13,11 +13,20 @@ custom subagent, then consolidate results.
 - Dispatch only on explicit agenticons/subagents/delegation/parallel/model-tier
   asks. Escape hatches win: `no subagents`, `do not use subagents`,
   `handle locally`, `do this yourself`, `do not use agenticons`.
-- Dispatch to named subagents (do not merely recommend models). Exact names
-  from installed Agenticons specs (`.codex/agents/*.toml` or
-  `~/.codex/agents/*.toml`): `advisor`, `systems_thinker`, `planner`,
-  `coding_worker`, `fast_coding_worker`, `helper_worker`, `forensic_analyst`,
-  `doc_reviewer`, `reviewer`, `qa_engineer`, `edge_case_analyst`.
+- Dispatch to named subagents (do not merely recommend models). Use the exact
+  subagent names from installed Agenticons specs (`.codex/agents/*.toml` or
+  `~/.codex/agents/*.toml`):
+  - `advisor`
+  - `systems_thinker`
+  - `planner`
+  - `coding_worker`
+  - `fast_coding_worker`
+  - `helper_worker`
+  - `forensic_analyst`
+  - `doc_reviewer`
+  - `reviewer`
+  - `qa_engineer`
+  - `edge_case_analyst`
 - Parent is orchestrator and DRA: routing, scope, sequencing, conflicts,
   verification, accept/reject of advisory subagent output, final response.
 - Subagents must not delegate. Use only the model in each agent spec — no
