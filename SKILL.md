@@ -1,6 +1,6 @@
 ---
 name: agenticons
-description: Selects and spawns named Codex custom subagents for technical advising, systems thinking, planning, implementation, review, documentation review, deep investigation, exploratory QA verification, observability engineering, and helper work. Use when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing. Do not use when the user asks the parent to handle the work locally without subagents.
+description: Selects and spawns named Codex custom subagents for technical advising, systems thinking, planning, implementation, review, documentation review, deep investigation, exploratory QA verification, observability engineering, security auditing, and helper work. Use when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing. Do not use when the user asks the parent to handle the work locally without subagents.
 ---
 
 # Agenticons
@@ -28,6 +28,7 @@ custom subagent, then consolidate results.
   - `qa_engineer`
   - `edge_case_analyst`
   - `observability_engineer`
+  - `security_auditor`
 - Parent is orchestrator and DRA: routing, scope, sequencing, conflicts,
   verification, accept/reject of advisory subagent output, final response.
 - Subagents must not delegate. Use only the model in each agent spec — no
@@ -53,6 +54,7 @@ custom subagent, then consolidate results.
 | End-to-end exercise of a feature/release, exploratory QA, performance rough edges | `qa_engineer` |
 | Uncovered edge cases, missing acceptance criteria, untested behavior | `edge_case_analyst` |
 | Instrumentation/wide-event review, OpenTelemetry strategy, SLO and burn-alert design, alert-fatigue cleanup, sampling/pipeline cost, observability for CI/CD, frontend, or LLM apps | `observability_engineer` |
+| Threat model, system-wide security posture, authn/authz and tenancy boundaries, secrets, dependency/supply-chain and CI/CD exposure, pre-release or periodic security audit | `security_auditor` |
 
 **Boundaries (non-obvious pairs):** `advisor` = is the technical decision
 sound; `planner` = sequence an accepted direction; `reviewer` = judge the
@@ -60,22 +62,27 @@ change. `systems_thinker` = structure over time; `forensic_analyst` = prove
 one hard failure. `helper_worker` when you know roughly where to look;
 `forensic_analyst` when nobody does. `reviewer` reads the change; `qa_engineer`
 runs it. `doc_reviewer` audits docs vs code (read-only); not a security
-sign-off — pair with `reviewer` for threat-model/API contracts. Escalate
-cheap recon → forensic only when needed. `edge_case_analyst` finds cases
-never considered; `reviewer`/`qa_engineer` judge or run what exists.
+sign-off — pair with `reviewer` for API contracts, `security_auditor` for
+the threat model. Escalate cheap recon → forensic only when needed.
+`edge_case_analyst` finds cases never considered; `reviewer`/`qa_engineer`
+judge or run what exists.
 `observability_engineer` designs telemetry, SLOs, and analysis workflows;
 `forensic_analyst` proves one failure with them; `qa_engineer` runs the
 feature, `observability_engineer` judges what its telemetry reveals;
 observability governance (business case, build-vs-buy, vendors) → `advisor`.
+`security_auditor` audits the system's posture; `reviewer` judges one
+change's security; `edge_case_analyst` lists hostile inputs,
+`security_auditor` models the attacker; a suspected breach → `forensic_analyst`;
+security governance (compliance program, tooling/vendor selection) → `advisor`.
 
 ## Shared dispatch loop
 
 For every pattern: brief the subagent → receive report/result → parent decides
 accept/redo/stop → route confirmed follow-ups to workers (`coding_worker` /
 `fast_coding_worker`). Report-producing roles (`forensic_analyst`,
-`edge_case_analyst`, `doc_reviewer`, `systems_thinker`) are read-only: if the
-user asks to save the report, write the accepted report verbatim; otherwise
-fold findings into your response.
+`edge_case_analyst`, `doc_reviewer`, `systems_thinker`, `security_auditor`)
+are read-only: if the user asks to save the report, write the accepted report
+verbatim; otherwise fold findings into your response.
 
 **Pattern one-liners (non-obvious only):**
 
@@ -97,6 +104,8 @@ fold findings into your response.
 - **Observability design / review** — `observability_engineer` reports on
   instrumentation, SLOs, and telemetry cost (may create scratch artifacts);
   route confirmed instrumentation edits to workers.
+- **Security audit** — `security_auditor` before a release or on a cadence;
+  route confirmed fixes to workers; `reviewer` still covers each diff.
 
 ## User-facing labels
 

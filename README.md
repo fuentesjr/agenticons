@@ -5,7 +5,7 @@
 
 *Pronounced uh-JEN-tih-conz — like Decepticons, not "agent icons."*
 
-Agenticons is a Codex skill package for explicit, named subagent delegation. Its roles cover technical advising, systems thinking, planning, implementation, review, documentation, investigation, QA verification, and observability engineering.
+Agenticons is a Codex skill package for explicit, named subagent delegation. Its roles cover technical advising, systems thinking, planning, implementation, review, documentation, investigation, QA verification, observability engineering, and security auditing.
 
 ## Why This Exists
 
@@ -66,7 +66,7 @@ Model routing is fixed by the installed Agenticons agent specs. Spawn each role 
 
 The parent agent is the orchestrator and DRA (Directly Responsible Agent). That means the parent remains accountable for the project outcome: subagents do not delegate or route; they return advisory findings/results to the parent, who owns sequencing, verification, conflict resolution, deciding what to accept, and the final response.
 
-Standard review always routes to `reviewer`, including security-sensitive and high-stakes review requests.
+Standard review always routes to `reviewer`, including security-sensitive and high-stakes review requests. A security audit of the system as a whole, rather than of one change, routes to `security_auditor`.
 
 | Subagent | Agent file | Model | Use |
 |---|---|---:|---|
@@ -82,6 +82,7 @@ Standard review always routes to `reviewer`, including security-sensitive and hi
 | `qa_engineer` | `.codex/agents/qa_engineer.toml` | `gpt-5.6-terra` | Exploratory QA: exercises changes end-to-end, probes regressions, performance, and rough edges |
 | `edge_case_analyst` | `.codex/agents/edge_case_analyst.toml` | `gpt-5.6-sol` | Find unconsidered edge cases and design gaps; specify expected behavior and concrete test cases |
 | `observability_engineer` | `.codex/agents/observability_engineer.toml` | `gpt-5.6-terra` | Instrumentation and wide-event review, OpenTelemetry strategy, SLO and burn-alert design, telemetry sampling/pipeline cost, observability for CI/CD, frontend, and LLM apps |
+| `security_auditor` | `.codex/agents/security_auditor.toml` | `gpt-5.6-sol` | Defensive security posture audit: threat model, ASVS 5.0-grounded findings ranked by severity, dependency/supply-chain and CI/CD hardening; read-only, fixes routed to workers |
 
 Challenge technical direction before planning:
 
@@ -181,6 +182,18 @@ to review its instrumentation and alerting: event width and trace coverage again
 OpenTelemetry conventions, SLO and burn-alert design for checkout, threshold
 alerts we should delete, and expected telemetry volume with a sampling strategy.
 Return a report; route any instrumentation edits back to me for coding_worker.
+```
+
+Audit security posture before a release:
+
+```text
+Use agenticons.
+
+We are opening the tenant API to external customers next quarter. Spawn
+security_auditor for a pre-release audit of the whole service: threat model,
+authentication and tenant isolation, secrets handling, dependency and CI/CD
+exposure. Confirm findings with minimal evidence and rank them by severity.
+Do not edit code; route fixes back to me for coding_worker.
 ```
 
 For more detail, see [docs/faq.md](docs/faq.md) and [docs/design.md](docs/design.md).

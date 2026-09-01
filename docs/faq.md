@@ -79,10 +79,11 @@ Preview writes with:
 | Audit docs for drift/accuracy, obsolete low-value material, and AI-confusing content (report only) | `doc_reviewer` |
 | Apply confirmed documentation fixes or removals | `fast_coding_worker` or `coding_worker` |
 | Review code for correctness and regressions | `reviewer` |
-| Review auth, payments, data loss, or production-risk changes | `reviewer` |
+| Review auth, payments, data loss, or production-risk changes (one change) | `reviewer` |
 | Exercise a feature or release end-to-end before shipping | `qa_engineer` |
 | Find edge cases or missing test coverage nobody considered | `edge_case_analyst` |
 | Review instrumentation, design SLOs and burn alerts, or control telemetry cost | `observability_engineer` |
+| Audit the security posture of the whole system: threat model, authn/authz, secrets, supply chain, CI/CD (report only) | `security_auditor` |
 
 ## When should I use `advisor` instead of `planner`?
 
@@ -109,6 +110,12 @@ Do not use `systems_thinker` as a mandatory gate or for an isolated event withou
 Use `observability_engineer` for instrumentation and wide-event review, OpenTelemetry strategy, SLO and burn-alert design, alert-fatigue cleanup, telemetry sampling and pipeline cost, and observability for CI/CD, frontend/mobile, or LLM applications. Its practice follows Observability Engineering, 2nd edition. It may create scratch scripts or configs to demonstrate a recommendation, but production instrumentation edits go to `coding_worker` or `fast_coding_worker`.
 
 Use `forensic_analyst` to prove the cause of one hard failure; `observability_engineer` designs the telemetry that makes such debugging possible. Use `qa_engineer` to exercise a feature end-to-end; `observability_engineer` judges what its telemetry reveals. Observability governance questions — business case, build versus buy, vendor selection — belong to `advisor`.
+
+## When should I use `security_auditor`?
+
+Use `security_auditor` for a defensive audit of the system as a whole: threat model, authentication and session handling, authorization and tenant isolation, input handling, secrets, data protection, dependency and supply-chain exposure, and CI/CD hardening. It audits against OWASP ASVS 5.0, confirms findings with minimal evidence, and returns a severity-ranked report. It is read-only; fixes go to `coding_worker` or `fast_coding_worker`.
+
+Use `reviewer` for the security of one change. Use `edge_case_analyst` to enumerate hostile inputs as test cases; `security_auditor` models the attacker and the trust boundaries those inputs cross. Use `forensic_analyst` to investigate a suspected breach; `security_auditor` audits before the incident. Security governance questions — compliance programs, tooling and vendor selection — belong to `advisor`.
 
 ## Can I use a different model for an Agenticons role?
 
