@@ -1,6 +1,6 @@
 name = "helper_worker"
 description = "Read-only helper for investigation, repo reconnaissance, docs/API lookup, failure triage, and evidence gathering."
-model = "gpt-5.6-luna"
+model = "gpt-5.6-terra"
 model_reasoning_effort = "medium"
 sandbox_mode = "read-only"
 nickname_candidates = ["Help Atlas", "Help Delta", "Help Echo"]

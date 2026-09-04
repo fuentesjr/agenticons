@@ -1,6 +1,6 @@
 name = "planner"
 description = "Planning subagent for complex features, implementation decomposition, sequencing, risk analysis, and verification after technical direction is accepted."
-model = "gpt-5.6-sol"
+model = "gpt-6-astra"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 nickname_candidates = ["Plan Atlas", "Plan Delta", "Plan Echo"]

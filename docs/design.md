@@ -59,6 +59,8 @@ Escape hatches take precedence. If the user says `no subagents`, `do not use sub
 
 Model routing is part of the package contract. The parent agent must use only the model identifiers configured in `.codex/agents/*.toml` and documented in the Agent Roles table; it must not override a role to an unlisted model or provider at dispatch time. Model changes should happen by updating the relevant agent spec and docs.
 
+The roster prioritizes quality, then speed. Astra is assigned to architecture, systems analysis, planning, difficult investigations, review, edge-case analysis, and security audits. Sol is assigned to substantial implementation and verification, Terra to bounded evidence gathering, and Luna to small mechanical changes. Reasoning effort follows the role's analytical scope.
+
 Fixing one model per role also keeps each subagent cache-coherent by construction: a role never switches models mid-task, so its prompt-prefix cache is never invalidated by a routing change. Dynamic auto-routers add cache-aware machinery to recover this property; a fixed roster has it for free.
 
 ## Parent Orchestration Contract
@@ -78,21 +80,21 @@ Subagents must not delegate or route. They return findings/results to the parent
 
 ## Agent Roles
 
-| Agent | Sandbox | Model | Responsibility |
-|---|---|---:|---|
-| `advisor` | `read-only` | `gpt-5.6-sol` | Principal-level technical direction, tradeoffs, reversibility, and decision consistency |
-| `systems_thinker` | `read-only` | `gpt-5.6-sol` | Recurring sociotechnical dynamics, feedback loops, leverage points, and intervention learning loops |
-| `planner` | `read-only` | `gpt-5.6-sol` | Implementation decomposition, sequencing, risk analysis, and verification |
-| `coding_worker` | `workspace-write` | `gpt-5.6-terra` | Normal implementation, bug fixes, refactors |
-| `fast_coding_worker` | `workspace-write` | `gpt-5.6-luna` | Small localized edits and quick fixes |
-| `helper_worker` | `read-only` | `gpt-5.6-luna` | Quick lookup, repo reconnaissance, evidence gathering |
-| `forensic_analyst` | `read-only` | `gpt-5.6-sol` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
-| `doc_reviewer` | `read-only` | `gpt-5.6-luna` | Doc accuracy/drift, prune obsolete low-value docs, flag AI-confusing content; saveable report |
-| `reviewer` | `read-only` | `gpt-5.6-sol` | Standard correctness, security, maintainability, regression review |
-| `qa_engineer` | `workspace-write` | `gpt-5.6-terra` | Exploratory QA verification: exercises changes end-to-end, probes regressions, performance, and user-facing rough edges |
-| `edge_case_analyst` | `read-only` | `gpt-5.6-sol` | Edge-case and coverage-gap discovery: finds unconsidered cases and specifies expected behavior and test cases |
-| `observability_engineer` | `workspace-write` | `gpt-5.6-terra` | Instrumentation and wide-event review, OpenTelemetry strategy, SLO and burn-alert design, telemetry sampling and pipeline cost; scratch artifacts only, production edits routed to workers |
-| `security_auditor` | `read-only` | `gpt-5.6-sol` | Defensive security posture audit: threat model, ASVS 5.0-grounded findings ranked by severity, dependency/supply-chain and CI/CD hardening; fixes routed to workers |
+| Agent | Sandbox | Model | Effort | Responsibility |
+|---|---|---:|---:|---|
+| `advisor` | `read-only` | `gpt-6-astra` | `xhigh` | Principal-level technical direction, tradeoffs, reversibility, and decision consistency |
+| `systems_thinker` | `read-only` | `gpt-6-astra` | `xhigh` | Recurring sociotechnical dynamics, feedback loops, leverage points, and intervention learning loops |
+| `planner` | `read-only` | `gpt-6-astra` | `high` | Implementation decomposition, sequencing, risk analysis, and verification |
+| `coding_worker` | `workspace-write` | `gpt-5.6-sol` | `high` | Normal implementation, bug fixes, refactors |
+| `fast_coding_worker` | `workspace-write` | `gpt-5.6-luna` | `low` | Small localized edits and quick fixes |
+| `helper_worker` | `read-only` | `gpt-5.6-terra` | `medium` | Quick lookup, repo reconnaissance, evidence gathering |
+| `forensic_analyst` | `read-only` | `gpt-6-astra` | `max` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
+| `doc_reviewer` | `read-only` | `gpt-5.6-sol` | `high` | Doc accuracy/drift, prune obsolete low-value docs, flag AI-confusing content; saveable report |
+| `reviewer` | `read-only` | `gpt-6-astra` | `high` | Standard correctness, security, maintainability, regression review |
+| `qa_engineer` | `workspace-write` | `gpt-5.6-sol` | `high` | Exploratory QA verification: exercises changes end-to-end, probes regressions, performance, and user-facing rough edges |
+| `edge_case_analyst` | `read-only` | `gpt-6-astra` | `xhigh` | Edge-case and coverage-gap discovery: finds unconsidered cases and specifies expected behavior and test cases |
+| `observability_engineer` | `workspace-write` | `gpt-5.6-sol` | `high` | Instrumentation and wide-event review, OpenTelemetry strategy, SLO and burn-alert design, telemetry sampling and pipeline cost; scratch artifacts only, production edits routed to workers |
+| `security_auditor` | `read-only` | `gpt-6-astra` | `xhigh` | Defensive security posture audit: threat model, ASVS 5.0-grounded findings ranked by severity, dependency/supply-chain and CI/CD hardening; fixes routed to workers |
 
 ## Agent Spec Contract
 

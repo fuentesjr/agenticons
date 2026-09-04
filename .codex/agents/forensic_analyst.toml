@@ -1,6 +1,6 @@
 name = "forensic_analyst"
 description = "Deep-investigation subagent for hard root-cause analysis, elusive bugs, intermittent failures, and cross-system behavior tracing."
-model = "gpt-5.6-sol"
+model = "gpt-6-astra"
 model_reasoning_effort = "max"
 sandbox_mode = "read-only"
 nickname_candidates = ["Trace Atlas", "Trace Delta", "Trace Echo"]

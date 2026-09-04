@@ -1,6 +1,6 @@
 name = "edge_case_analyst"
 description = "Read-only analyst that finds unconsidered edge cases and design gaps, then specifies expected behavior and concrete test cases for each."
-model = "gpt-5.6-sol"
+model = "gpt-6-astra"
 model_reasoning_effort = "xhigh"
 sandbox_mode = "read-only"
 nickname_candidates = ["Edge Atlas", "Edge Delta", "Edge Echo"]

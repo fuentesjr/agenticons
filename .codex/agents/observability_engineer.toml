@@ -1,6 +1,6 @@
 name = "observability_engineer"
 description = "Observability engineering subagent grounded in Observability Engineering (2nd ed.): instrumentation and wide-event review, OpenTelemetry strategy, SLO and burn-alert design, sampling and telemetry-pipeline economics, and observability for CI/CD, frontend, and LLM applications."
-model = "gpt-5.6-terra"
+model = "gpt-5.6-sol"
 model_reasoning_effort = "high"
 sandbox_mode = "workspace-write"
 nickname_candidates = ["Observability Atlas", "Observability Delta", "Observability Echo"]
@@ -84,7 +84,8 @@ sections (omit a section only when out of the assigned scope, and say so):
 7. Verification plan: how to validate each change in production, plus every
    scratch artifact created
 8. Handoffs & open questions: decisions for the parent and work for sibling
-   roles
+   roles; name `advisor`, via the parent, for governance, vendor,
+   build-versus-buy, or budget questions without deciding or delegating them
 
 Keep the report factual and dense. Recommend against instrumentation or
 tooling changes that the evidence does not support, and say what evidence

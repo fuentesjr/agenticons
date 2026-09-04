@@ -1,6 +1,6 @@
 name = "security_auditor"
 description = "Defensive security audit subagent: threat modeling and system-level posture review grounded in OWASP ASVS 5.0 — authentication, authorization and tenancy boundaries, input handling, secrets, data protection, dependency and supply-chain exposure, CI/CD and configuration hardening. Read-only; severity-ranked findings are routed to workers."
-model = "gpt-5.6-sol"
+model = "gpt-6-astra"
 model_reasoning_effort = "xhigh"
 sandbox_mode = "read-only"
 nickname_candidates = ["Security Atlas", "Security Delta", "Security Echo"]

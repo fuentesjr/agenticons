@@ -62,27 +62,29 @@ reviewer
 
 Agenticons dispatches only when the user explicitly asks for agenticons, subagents, delegation, parallel execution, or model-tier routing. If a request says `no subagents`, `do not use subagents`, `handle locally`, `do this yourself`, or `do not use agenticons`, the parent agent should handle it directly.
 
-Model routing is fixed by the installed Agenticons agent specs. Spawn each role with the model listed in its `.codex/agents/*.toml` file and in the table below; do not substitute unlisted models or providers at dispatch time.
+Model routing is fixed by the installed Agenticons agent specs. Spawn each role with the model and reasoning effort listed in its `.codex/agents/*.toml` file and in the table below; do not substitute unlisted models or providers at dispatch time.
+
+The roster prioritizes quality, then speed. It assigns Astra to architecture, systems analysis, planning, difficult investigations, review, edge-case analysis, and security audits. It assigns Sol to substantial implementation and verification, Terra to bounded evidence gathering, and Luna to small mechanical changes. Higher reasoning effort is reserved for work whose analytical scope needs it.
 
 The parent agent is the orchestrator and DRA (Directly Responsible Agent). That means the parent remains accountable for the project outcome: subagents do not delegate or route; they return advisory findings/results to the parent, who owns sequencing, verification, conflict resolution, deciding what to accept, and the final response.
 
 Standard review always routes to `reviewer`, including security-sensitive and high-stakes review requests. A security audit of the system as a whole, rather than of one change, routes to `security_auditor`.
 
-| Subagent | Agent file | Model | Use |
-|---|---|---:|---|
-| `advisor` | `.codex/agents/advisor.toml` | `gpt-5.6-sol` | Principal-level technical direction, tradeoffs, reversibility, and decision consistency |
-| `systems_thinker` | `.codex/agents/systems_thinker.toml` | `gpt-5.6-sol` | Recurring sociotechnical dynamics, feedback loops, leverage points, and intervention learning loops |
-| `planner` | `.codex/agents/planner.toml` | `gpt-5.6-sol` | Implementation decomposition, sequencing, risk analysis, and verification |
-| `coding_worker` | `.codex/agents/coding_worker.toml` | `gpt-5.6-terra` | Normal implementation, bug fixes, refactors |
-| `fast_coding_worker` | `.codex/agents/fast_coding_worker.toml` | `gpt-5.6-luna` | Small localized edits and quick fixes |
-| `helper_worker` | `.codex/agents/helper_worker.toml` | `gpt-5.6-luna` | Read-only lookup, repo reconnaissance, docs/API lookup |
-| `forensic_analyst` | `.codex/agents/forensic_analyst.toml` | `gpt-5.6-sol` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
-| `doc_reviewer` | `.codex/agents/doc_reviewer.toml` | `gpt-5.6-luna` | Doc accuracy/drift, prune obsolete low-value docs, flag AI-confusing content |
-| `reviewer` | `.codex/agents/reviewer.toml` | `gpt-5.6-sol` | Standard code review |
-| `qa_engineer` | `.codex/agents/qa_engineer.toml` | `gpt-5.6-terra` | Exploratory QA: exercises changes end-to-end, probes regressions, performance, and rough edges |
-| `edge_case_analyst` | `.codex/agents/edge_case_analyst.toml` | `gpt-5.6-sol` | Find unconsidered edge cases and design gaps; specify expected behavior and concrete test cases |
-| `observability_engineer` | `.codex/agents/observability_engineer.toml` | `gpt-5.6-terra` | Instrumentation and wide-event review, OpenTelemetry strategy, SLO and burn-alert design, telemetry sampling/pipeline cost, observability for CI/CD, frontend, and LLM apps |
-| `security_auditor` | `.codex/agents/security_auditor.toml` | `gpt-5.6-sol` | Defensive security posture audit: threat model, ASVS 5.0-grounded findings ranked by severity, dependency/supply-chain and CI/CD hardening; read-only, fixes routed to workers |
+| Subagent | Agent file | Model | Effort | Use |
+|---|---|---:|---:|---|
+| `advisor` | `.codex/agents/advisor.toml` | `gpt-6-astra` | `xhigh` | Principal-level technical direction, tradeoffs, reversibility, and decision consistency |
+| `systems_thinker` | `.codex/agents/systems_thinker.toml` | `gpt-6-astra` | `xhigh` | Recurring sociotechnical dynamics, feedback loops, leverage points, and intervention learning loops |
+| `planner` | `.codex/agents/planner.toml` | `gpt-6-astra` | `high` | Implementation decomposition, sequencing, risk analysis, and verification |
+| `coding_worker` | `.codex/agents/coding_worker.toml` | `gpt-5.6-sol` | `high` | Normal implementation, bug fixes, refactors |
+| `fast_coding_worker` | `.codex/agents/fast_coding_worker.toml` | `gpt-5.6-luna` | `low` | Small localized edits and quick fixes |
+| `helper_worker` | `.codex/agents/helper_worker.toml` | `gpt-5.6-terra` | `medium` | Read-only lookup, repo reconnaissance, docs/API lookup |
+| `forensic_analyst` | `.codex/agents/forensic_analyst.toml` | `gpt-6-astra` | `max` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
+| `doc_reviewer` | `.codex/agents/doc_reviewer.toml` | `gpt-5.6-sol` | `high` | Doc accuracy/drift, prune obsolete low-value docs, flag AI-confusing content |
+| `reviewer` | `.codex/agents/reviewer.toml` | `gpt-6-astra` | `high` | Standard code review |
+| `qa_engineer` | `.codex/agents/qa_engineer.toml` | `gpt-5.6-sol` | `high` | Exploratory QA: exercises changes end-to-end, probes regressions, performance, and rough edges |
+| `edge_case_analyst` | `.codex/agents/edge_case_analyst.toml` | `gpt-6-astra` | `xhigh` | Find unconsidered edge cases and design gaps; specify expected behavior and concrete test cases |
+| `observability_engineer` | `.codex/agents/observability_engineer.toml` | `gpt-5.6-sol` | `high` | Instrumentation and wide-event review, OpenTelemetry strategy, SLO and burn-alert design, telemetry sampling/pipeline cost, observability for CI/CD, frontend, and LLM apps |
+| `security_auditor` | `.codex/agents/security_auditor.toml` | `gpt-6-astra` | `xhigh` | Defensive security posture audit: threat model, ASVS 5.0-grounded findings ranked by severity, dependency/supply-chain and CI/CD hardening; read-only, fixes routed to workers |
 
 Challenge technical direction before planning:
 

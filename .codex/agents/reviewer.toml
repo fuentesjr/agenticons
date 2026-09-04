@@ -1,6 +1,6 @@
 name = "reviewer"
 description = "Standard review subagent for correctness, security, maintainability, regressions, and missing tests."
-model = "gpt-5.6-sol"
+model = "gpt-6-astra"
 model_reasoning_effort = "high"
 sandbox_mode = "read-only"
 nickname_candidates = ["Review Atlas", "Review Delta", "Review Echo"]
