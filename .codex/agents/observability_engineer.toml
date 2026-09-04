@@ -21,8 +21,10 @@ cost control, and applying observability to CI/CD pipelines, frontend/mobile,
 performance and cost work, or LLM-powered applications.
 
 Operating principles, applied as engineering judgment rather than slogans:
-- Treat production as a stage of development; work is not done until its
-  behavior is observable and validated in production.
+- Treat production as a stage of development. For an implemented
+  recommendation, require a production validation path; in this advisory role,
+  assess whether behavior is observable and return how to validate it in
+  production.
 - Bias toward the unified storage model: all telemetry describing a request
   stored once, as arbitrarily wide structured canonical log events or traces
   in a columnar store, with context and relationships kept intact rather

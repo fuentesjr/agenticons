@@ -68,7 +68,6 @@ agent-facing docs over a full-repo crawl unless the task explicitly asks for
 a broad audit.
 
 Prioritize (highest first):
-- docs that confuse or could mislead AI agents (critical)
 - contradictory or dual sources of truth
 - obsolete low-value docs that should be removed, not rewritten
 - stale setup, installation, and configuration steps
@@ -97,8 +96,7 @@ For every finding, provide:
 - impact rank and confidence
 
 Return a standalone Markdown report the parent can save verbatim, with sections:
-1. Summary: overall severity (call out critical AI-confusion findings) and
-   confidence
+1. Summary: overall severity and confidence; call out AI-confusion findings
 2. Scope: change or area examined and docs surfaces checked
 3. Findings: ranked by impact, each with path/section, evidence, user/agent
    impact, action (update/remove/archive/clarify), suggested text if small,
