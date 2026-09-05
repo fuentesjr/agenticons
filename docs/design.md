@@ -59,7 +59,7 @@ Escape hatches take precedence. If the user says `no subagents`, `do not use sub
 
 Model routing is part of the package contract. The parent agent must use only the model identifiers configured in `.codex/agents/*.toml` and documented in the Agent Roles table; it must not override a role to an unlisted model or provider at dispatch time. Model changes should happen by updating the relevant agent spec and docs.
 
-The roster prioritizes quality, then speed. Astra is assigned to architecture, systems analysis, planning, difficult investigations, review, edge-case analysis, and security audits. Sol is assigned to substantial implementation and verification, Terra to bounded evidence gathering, and Luna to small mechanical changes. Reasoning effort follows the role's analytical scope.
+The roster prioritizes quality, then speed. Astra is assigned to normal implementation at low reasoning effort, and to architecture, systems analysis, planning, difficult investigations, review, edge-case analysis, and security audits at higher effort. Sol is assigned to documentation review, QA, and observability, Terra to bounded evidence gathering, and Luna to small mechanical changes.
 
 Fixing one model per role also keeps each subagent cache-coherent by construction: a role never switches models mid-task, so its prompt-prefix cache is never invalidated by a routing change. Dynamic auto-routers add cache-aware machinery to recover this property; a fixed roster has it for free.
 
@@ -85,7 +85,7 @@ Subagents must not delegate or route. They return findings/results to the parent
 | `advisor` | `read-only` | `gpt-6-astra` | `xhigh` | Principal-level technical direction, tradeoffs, reversibility, and decision consistency |
 | `systems_thinker` | `read-only` | `gpt-6-astra` | `xhigh` | Recurring sociotechnical dynamics, feedback loops, leverage points, and intervention learning loops |
 | `planner` | `read-only` | `gpt-6-astra` | `high` | Implementation decomposition, sequencing, risk analysis, and verification |
-| `coding_worker` | `workspace-write` | `gpt-5.6-sol` | `high` | Normal implementation, bug fixes, refactors |
+| `coding_worker` | `workspace-write` | `gpt-6-astra` | `low` | Normal implementation, bug fixes, refactors |
 | `fast_coding_worker` | `workspace-write` | `gpt-5.6-luna` | `low` | Small localized edits and quick fixes |
 | `helper_worker` | `read-only` | `gpt-5.6-terra` | `medium` | Quick lookup, repo reconnaissance, evidence gathering |
 | `forensic_analyst` | `read-only` | `gpt-6-astra` | `max` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
