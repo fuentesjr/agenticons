@@ -135,7 +135,7 @@ Include the concrete task, scope, constraints, ownership, and expected output. F
 
 ## How do I limit fan-out?
 
-Set global agent limits in `.codex/config.toml` or `~/.codex/config.toml`:
+Set repository-local agent limits in `.codex/config.toml`. Set user-wide defaults in `~/.codex/config.toml`:
 
 ```toml
 [agents]
@@ -155,8 +155,31 @@ go vet ./...
 
 ## What does the validator check?
 
-The validator checks that every agent TOML file is parseable, required fields are present, agent names match filenames, sandbox modes and reasoning efforts are supported, `README.md`, `SKILL.md`, `docs/design.md`, and `docs/faq.md` mention every configured agent, the model tables in `README.md` and `docs/design.md` match the TOML specs, the `docs/design.md` Sandbox column matches each agent's `sandbox_mode`, and the agent list in `scripts/install.sh` matches the agent files.
+The validator checks:
+
+- Every agent TOML file parses and has the required fields.
+- Agent names match filenames.
+- Sandbox modes and reasoning efforts use supported values.
+- `README.md`, `SKILL.md`, `docs/design.md`, and `docs/faq.md` mention every agent.
+- `README.md` lists every agent TOML path.
+- Model columns in `README.md` and `docs/design.md` match the TOML specs.
+- The `docs/design.md` Sandbox column matches each agent's `sandbox_mode`.
+- `SKILL.md` has the exact dispatch list.
+- The agent list in `scripts/install.sh` matches the agent files.
+
+The validator does not compare reasoning effort values in the role tables.
 
 ## Why is my new agent failing validation?
 
-Check that the TOML file has all required fields, the `name` matches the filename, the sandbox mode is `read-only` or `workspace-write`, the reasoning effort is a supported value, `README.md`, `SKILL.md`, `docs/design.md`, and `docs/faq.md` mention the new agent (including its model in the README and design tables), and the agent is listed in `scripts/install.sh`.
+Check the following items:
+
+- The TOML file has all required fields.
+- The `name` matches the filename.
+- The sandbox mode is `read-only` or `workspace-write`.
+- The reasoning effort is supported.
+- The exact dispatch list includes the agent in `SKILL.md`.
+- `README.md`, `SKILL.md`, `docs/design.md`, and `docs/faq.md` mention the agent.
+- The README table includes the agent's TOML path and model.
+- The design table includes the agent's model and sandbox.
+- `scripts/install.sh` includes the agent.
+- Both role tables use the agent's reasoning effort value.

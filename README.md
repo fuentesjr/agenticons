@@ -232,7 +232,7 @@ go test ./...
 go vet ./...
 ```
 
-The validator parses every agent TOML file and checks that the package docs, the model tables, and the installer's agent list stay aligned with the agent specs. `.github/workflows/validate.yml` runs the validator, tests, and vet on every push and pull request.
+The validator parses every agent TOML file and checks required fields, package agent mentions, the model columns in `README.md` and `docs/design.md`, the design sandbox column, and the installer's agent list. Compare both role tables' reasoning effort values manually when they change. `.github/workflows/validate.yml` runs the validator, tests, and vet on every push and pull request.
 
 ## License
 

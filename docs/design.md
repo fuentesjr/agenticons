@@ -270,6 +270,16 @@ The script works from a local checkout. It also works through a raw GitHub pipe,
 
 ## Change Policy
 
-When adding, removing, or renaming an agent, update the TOML file, `SKILL.md`, `README.md`, the agent list in `scripts/install.sh`, and any relevant docs in the same change. Run the validator and tests before publishing.
+When adding, removing, or renaming an agent, use this checklist:
+
+- Update the agent TOML file.
+- Update `SKILL.md`'s exact dispatch list.
+- Update the README agent table and TOML path.
+- Update the design model and sandbox table and package layout.
+- Update FAQ routing and all four docs' agent mentions.
+- Update the installer agent list in `scripts/install.sh`.
+- Align both role tables' reasoning effort values manually.
+
+Run the validator and tests before publishing.
 
 Model, sandbox, and role changes should be deliberate because they affect the delegation contract users rely on.
