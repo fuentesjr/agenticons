@@ -72,12 +72,12 @@ var (
 	// accepts, so a typo in an agent spec fails validation instead of
 	// shipping.
 	validModelReasoningEfforts = map[string]struct{}{
-		"minimal": {},
-		"low":     {},
-		"medium":  {},
-		"high":    {},
-		"xhigh":   {},
-		"max":     {},
+		"low":    {},
+		"medium": {},
+		"high":   {},
+		"xhigh":  {},
+		"max":    {},
+		"ultra":  {},
 	}
 
 	// installAgentsLineRE matches the single-quoted agents list in

@@ -20,6 +20,16 @@ func TestRunValidPackageFromNestedDirectory(t *testing.T) {
 	}
 }
 
+func TestRunAcceptsUltraReasoningEffort(t *testing.T) {
+	root := newPackageTree(t)
+	replaceInFile(t, agentPath(root), `model_reasoning_effort = "medium"`, `model_reasoning_effort = "ultra"`)
+	chdir(t, root)
+
+	if err := run(); err != nil {
+		t.Fatalf("run() error = %v, want nil", err)
+	}
+}
+
 func TestRunRejectsPackageDrift(t *testing.T) {
 	tests := []struct {
 		name    string
@@ -81,6 +91,13 @@ func TestRunRejectsPackageDrift(t *testing.T) {
 				replaceInFile(t, agentPath(root), `model_reasoning_effort = "medium"`, `model_reasoning_effort = "hgih"`)
 			},
 			wantErr: `.codex/agents/helper_worker.toml has unsupported model_reasoning_effort "hgih"`,
+		},
+		{
+			name: "reasoning effort no model supports",
+			mutate: func(t *testing.T, root string) {
+				replaceInFile(t, agentPath(root), `model_reasoning_effort = "medium"`, `model_reasoning_effort = "minimal"`)
+			},
+			wantErr: `.codex/agents/helper_worker.toml has unsupported model_reasoning_effort "minimal"`,
 		},
 		{
 			name: "stale model in readme table",
