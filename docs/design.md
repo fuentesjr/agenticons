@@ -86,14 +86,14 @@ Subagents must not delegate or route. They return findings/results to the parent
 | `systems_thinker` | `read-only` | `gpt-6-astra` | `xhigh` | Recurring sociotechnical dynamics, feedback loops, leverage points, and intervention learning loops |
 | `planner` | `read-only` | `gpt-6-astra` | `high` | Implementation decomposition, sequencing, risk analysis, and verification |
 | `coding_worker` | `workspace-write` | `gpt-6-astra` | `low` | Normal implementation, bug fixes, refactors |
-| `fast_coding_worker` | `workspace-write` | `gpt-5.6-luna` | `low` | Small localized edits and quick fixes |
+| `fast_coding_worker` | `workspace-write` | `gpt-6-luna` | `low` | Small localized edits and quick fixes |
 | `helper_worker` | `read-only` | `gpt-5.6-terra` | `medium` | Quick lookup, repo reconnaissance, evidence gathering |
 | `forensic_analyst` | `read-only` | `gpt-6-astra` | `max` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
-| `doc_reviewer` | `read-only` | `gpt-5.6-sol` | `high` | Doc accuracy/drift, prune obsolete low-value docs, flag AI-confusing content; saveable report |
+| `doc_reviewer` | `read-only` | `gpt-6-sol` | `high` | Doc accuracy/drift, prune obsolete low-value docs, flag AI-confusing content; saveable report |
 | `reviewer` | `read-only` | `gpt-6-astra` | `high` | Standard correctness, security, maintainability, regression review |
-| `qa_engineer` | `workspace-write` | `gpt-5.6-sol` | `high` | Exploratory QA verification: exercises changes end-to-end, probes regressions, performance, and user-facing rough edges |
+| `qa_engineer` | `workspace-write` | `gpt-6-sol` | `high` | Exploratory QA verification: exercises changes end-to-end, probes regressions, performance, and user-facing rough edges |
 | `edge_case_analyst` | `read-only` | `gpt-6-astra` | `xhigh` | Edge-case and coverage-gap discovery: finds unconsidered cases and specifies expected behavior and test cases |
-| `observability_engineer` | `workspace-write` | `gpt-5.6-sol` | `high` | Instrumentation and wide-event review, OpenTelemetry strategy, SLO and burn-alert design, telemetry sampling and pipeline cost; scratch artifacts only, production edits routed to workers |
+| `observability_engineer` | `workspace-write` | `gpt-6-sol` | `high` | Instrumentation and wide-event review, OpenTelemetry strategy, SLO and burn-alert design, telemetry sampling and pipeline cost; scratch artifacts only, production edits routed to workers |
 | `security_auditor` | `read-only` | `gpt-6-astra` | `xhigh` | Defensive security posture audit: threat model, ASVS 5.0-grounded findings ranked by severity, dependency/supply-chain and CI/CD hardening; fixes routed to workers |
 
 ## Agent Spec Contract
