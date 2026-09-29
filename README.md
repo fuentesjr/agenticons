@@ -79,11 +79,11 @@ Standard review always routes to `reviewer`, including security-sensitive and hi
 | `fast_coding_worker` | `.codex/agents/fast_coding_worker.toml` | `gpt-6-luna` | `low` | Small localized edits and quick fixes |
 | `helper_worker` | `.codex/agents/helper_worker.toml` | `gpt-5.6-terra` | `medium` | Read-only lookup, repo reconnaissance, docs/API lookup |
 | `forensic_analyst` | `.codex/agents/forensic_analyst.toml` | `gpt-6-astra` | `max` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
-| `doc_reviewer` | `.codex/agents/doc_reviewer.toml` | `gpt-6-sol` | `high` | Doc accuracy/drift, prune obsolete low-value docs, flag AI-confusing content |
+| `doc_reviewer` | `.codex/agents/doc_reviewer.toml` | `gpt-6.1-sol` | `high` | Doc accuracy/drift, prune obsolete low-value docs, flag AI-confusing content |
 | `reviewer` | `.codex/agents/reviewer.toml` | `gpt-6-astra` | `high` | Standard code review |
-| `qa_engineer` | `.codex/agents/qa_engineer.toml` | `gpt-6-sol` | `high` | Exploratory QA: exercises changes end-to-end, probes regressions, performance, and rough edges |
+| `qa_engineer` | `.codex/agents/qa_engineer.toml` | `gpt-6.1-sol` | `high` | Exploratory QA: exercises changes end-to-end, probes regressions, performance, and rough edges |
 | `edge_case_analyst` | `.codex/agents/edge_case_analyst.toml` | `gpt-6-astra` | `xhigh` | Find unconsidered edge cases and design gaps; specify expected behavior and concrete test cases |
-| `observability_engineer` | `.codex/agents/observability_engineer.toml` | `gpt-6-sol` | `high` | Instrumentation and wide-event review, OpenTelemetry strategy, SLO and burn-alert design, telemetry sampling/pipeline cost, observability for CI/CD, frontend, and LLM apps |
+| `observability_engineer` | `.codex/agents/observability_engineer.toml` | `gpt-6.1-sol` | `high` | Instrumentation and wide-event review, OpenTelemetry strategy, SLO and burn-alert design, telemetry sampling/pipeline cost, observability for CI/CD, frontend, and LLM apps |
 | `security_auditor` | `.codex/agents/security_auditor.toml` | `gpt-6-astra` | `xhigh` | Defensive security posture audit: threat model, ASVS 5.0-grounded findings ranked by severity, dependency/supply-chain and CI/CD hardening; read-only, fixes routed to workers |
 
 Challenge technical direction before planning:
