@@ -226,6 +226,8 @@ func TestRunRejectsPackageDrift(t *testing.T) {
 
 func newPackageTree(t *testing.T) string {
 	t.Helper()
+	// Keep run() from asking the real Codex CLI for model upgrades.
+	t.Setenv("PATH", t.TempDir())
 
 	root := t.TempDir()
 	writeFile(t, filepath.Join(root, "README.md"), validReadme())
@@ -351,4 +353,26 @@ func chdir(t *testing.T, dir string) {
 			t.Fatalf("restore working directory %s: %v", previousDir, err)
 		}
 	})
+}
+
+func TestOutdatedModelWarnings(t *testing.T) {
+	binDir := t.TempDir()
+	t.Setenv("PATH", binDir)
+	agents := []agentFile{{spec: agentSpec{Name: "helper_worker", Model: "gpt-5.4-mini", ModelReasoningEffort: "medium"}}}
+
+	if got := outdatedModelWarnings(agents); len(got) != 0 {
+		t.Fatalf("warnings without codex = %v, want none", got)
+	}
+
+	fakeCodex := filepath.Join(binDir, "codex")
+	writeFile(t, fakeCodex, `#!/bin/sh
+echo '{"models": [{"slug": "gpt-5.5-mini", "visibility": "list", "supported_reasoning_levels": [{"effort": "medium"}]}]}'
+`)
+	if err := os.Chmod(fakeCodex, 0o755); err != nil {
+		t.Fatal(err)
+	}
+	got := outdatedModelWarnings(agents)
+	if len(got) != 1 || !strings.Contains(got[0], "gpt-5.5-mini is available") {
+		t.Fatalf("warnings = %v, want one naming gpt-5.5-mini", got)
+	}
 }

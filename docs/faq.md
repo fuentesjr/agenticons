@@ -121,6 +121,8 @@ Use `reviewer` for the security of one change. Use `edge_case_analyst` to enumer
 
 No. Use the model configured in the role's `.codex/agents/*.toml` file and shown in the package docs. Agenticons should not substitute unlisted models or providers at dispatch time; changing a role's model requires updating the agent spec and docs.
 
+New point releases within a role's model family (for example `gpt-6-sol` to `gpt-6.1-sol`) are adopted with `go run ./scripts/bump_models`, which updates the agent specs and both role tables. Major versions and variant changes stay manual decisions.
+
 ## Who orchestrates Agenticons subagents?
 
 The parent agent is the orchestrator and DRA (Directly Responsible Agent). DRA means the parent remains accountable for the project outcome: it selects subagents, assigns scope, sequences work, resolves conflicts, verifies results, decides what subagent output to accept, and owns the final response. Subagents do not delegate or route; they return advisory findings/results to the parent.

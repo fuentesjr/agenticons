@@ -234,6 +234,15 @@ go vet ./...
 
 The validator parses every agent TOML file and checks required fields, package agent mentions, the model columns in `README.md` and `docs/design.md`, the design sandbox column, and the installer's agent list. Compare both role tables' reasoning effort values manually when they change. `.github/workflows/validate.yml` runs the validator, tests, and vet on every push and pull request.
 
+When the installed Codex CLI lists a newer point release of a role's model family, such as `gpt-6.1-sol` for a `gpt-6-sol` role, the validator prints a warning. Apply the bump with:
+
+```bash
+go run ./scripts/bump_models -n   # preview
+go run ./scripts/bump_models      # update agent specs and both role tables
+```
+
+The command reads `codex debug models`, not the on-disk model cache, because older Codex clients can overwrite that cache. It never changes major versions or variants, and it skips a release that does not accept the role's reasoning effort. CI has no Codex CLI, so the warning appears only on local runs.
+
 ## License
 
 GNU General Public License v3.0. See `LICENSE`.

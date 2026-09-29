@@ -11,6 +11,9 @@
 //   - SKILL.md's exact dispatch list matches the files in .codex/agents
 //   - scripts/install.sh's agent list matches the files in .codex/agents
 //
+// It also warns, without failing, when the installed Codex CLI lists a newer
+// point release of an agent's model; scripts/bump_models applies it.
+//
 // Keeping those rules in code makes documentation updates harder to forget
 // when a role is added, renamed, or removed.
 package main
@@ -23,6 +26,8 @@ import (
 	"regexp"
 	"sort"
 	"strings"
+
+	"agenticons/internal/models"
 
 	"github.com/BurntSushi/toml"
 )
@@ -146,8 +151,30 @@ func run() error {
 		return err
 	}
 
+	for _, warning := range outdatedModelWarnings(agents) {
+		fmt.Fprintf(os.Stderr, "WARNING: %s\n", warning)
+	}
+
 	fmt.Printf("Validated %d agent specs, %d docs, and the install script.\n", len(agents), len(docsToValidate))
 	return nil
+}
+
+// outdatedModelWarnings reports agents whose model has a newer point release
+// in the installed Codex CLI's model catalog. Machines without Codex, such as
+// CI, get no warnings.
+func outdatedModelWarnings(agents []agentFile) []string {
+	catalog, err := models.FetchCatalog()
+	if err != nil {
+		return nil
+	}
+	var warnings []string
+	for _, agent := range agents {
+		spec := agent.spec
+		if latest := catalog.Latest(spec.Model, spec.ModelReasoningEffort); latest != spec.Model {
+			warnings = append(warnings, fmt.Sprintf("%s uses %s but %s is available; run go run ./scripts/bump_models", spec.Name, spec.Model, latest))
+		}
+	}
+	return warnings
 }
 
 // findRepositoryRoot walks upward from the current working directory until it
