@@ -64,7 +64,7 @@ Agenticons dispatches only when the user explicitly asks for agenticons, subagen
 
 Model routing is fixed by the installed Agenticons agent specs. Spawn each role with the model and reasoning effort listed in its `.codex/agents/*.toml` file and in the table below; do not substitute unlisted models or providers at dispatch time.
 
-The roster prioritizes quality, then speed. It assigns Astra to normal implementation at low reasoning effort, and to architecture, systems analysis, planning, difficult investigations, review, edge-case analysis, and security audits at higher effort. It assigns Sol to documentation review, QA, and observability, Terra to bounded evidence gathering, and Luna to small mechanical changes.
+The roster prioritizes quality, then speed. Sol 6.1 handles normal implementation at extra-high reasoning effort, small localized edits and bounded evidence gathering at medium effort, and documentation review, QA, and observability at high effort. Astra handles architecture, systems analysis, planning, difficult investigations, review, edge-case analysis, and security audits. See [the model selection guide](docs/model-selection.md) for evidence, limitations, and follow-up criteria.
 
 The parent agent is the orchestrator and DRA (Directly Responsible Agent). That means the parent remains accountable for the project outcome: subagents do not delegate or route; they return advisory findings/results to the parent, who owns sequencing, verification, conflict resolution, deciding what to accept, and the final response.
 
@@ -75,9 +75,9 @@ Standard review always routes to `reviewer`, including security-sensitive and hi
 | `advisor` | `.codex/agents/advisor.toml` | `gpt-6-astra` | `xhigh` | Principal-level technical direction, tradeoffs, reversibility, and decision consistency |
 | `systems_thinker` | `.codex/agents/systems_thinker.toml` | `gpt-6-astra` | `xhigh` | Recurring sociotechnical dynamics, feedback loops, leverage points, and intervention learning loops |
 | `planner` | `.codex/agents/planner.toml` | `gpt-6-astra` | `high` | Implementation decomposition, sequencing, risk analysis, and verification |
-| `coding_worker` | `.codex/agents/coding_worker.toml` | `gpt-6-astra` | `low` | Normal implementation, bug fixes, refactors |
-| `fast_coding_worker` | `.codex/agents/fast_coding_worker.toml` | `gpt-6-luna` | `low` | Small localized edits and quick fixes |
-| `helper_worker` | `.codex/agents/helper_worker.toml` | `gpt-5.6-terra` | `medium` | Read-only lookup, repo reconnaissance, docs/API lookup |
+| `coding_worker` | `.codex/agents/coding_worker.toml` | `gpt-6.1-sol` | `xhigh` | Normal implementation, bug fixes, refactors |
+| `fast_coding_worker` | `.codex/agents/fast_coding_worker.toml` | `gpt-6.1-sol` | `medium` | Small localized edits and quick fixes |
+| `helper_worker` | `.codex/agents/helper_worker.toml` | `gpt-6.1-sol` | `medium` | Read-only lookup, repo reconnaissance, docs/API lookup |
 | `forensic_analyst` | `.codex/agents/forensic_analyst.toml` | `gpt-6-astra` | `max` | Deep root-cause investigation, intermittent and cross-system failures, forensic reports |
 | `doc_reviewer` | `.codex/agents/doc_reviewer.toml` | `gpt-6.1-sol` | `high` | Doc accuracy/drift, prune obsolete low-value docs, flag AI-confusing content |
 | `reviewer` | `.codex/agents/reviewer.toml` | `gpt-6-astra` | `high` | Standard code review |
@@ -199,6 +199,8 @@ Do not edit code; route fixes back to me for coding_worker.
 ```
 
 For more detail, see [docs/faq.md](docs/faq.md) and [docs/design.md](docs/design.md).
+Use [the model selection guide](docs/model-selection.md) to evaluate benchmark
+evidence before proposing role model changes.
 
 ## Configuration
 

@@ -1,7 +1,7 @@
 name = "fast_coding_worker"
 description = "Fast implementation subagent for small localized edits, mechanical changes, and quick test fixes."
-model = "gpt-6-luna"
-model_reasoning_effort = "low"
+model = "gpt-6.1-sol"
+model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 nickname_candidates = ["Spark Atlas", "Spark Delta", "Spark Echo"]
 
