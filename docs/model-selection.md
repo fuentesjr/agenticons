@@ -36,10 +36,14 @@ external evaluation; record coverage and limitations for both.
 | [Artificial Analysis OpenAI provider comparison](https://artificialanalysis.ai/providers/openai) | Broad capability screening and API response characteristics | Aggregate intelligence and 500-token response times cannot substitute for coding-agent results or task completion time. |
 | [OpenAI model selection](https://developers.openai.com/api/docs/guides/model-selection) | Supported use cases and a starting shortlist | Vendor positioning is not a controlled comparison of effort settings. |
 | [OpenAI reasoning guidance](https://developers.openai.com/api/docs/guides/reasoning#reasoning-effort) | Understanding effort controls and supported settings | More effort is not evidence of better measured performance on a particular role. |
+| [OpenAI deployment safety cards](https://deploymentsafety.openai.com/) | Agentic-safety results for a new model: unauthorized actions, restriction workarounds, prompt injection, destructive actions. Read the card before proposing any new model. | Most figures omit reasoning effort, and OpenAI describes its alignment evaluations as mainly low-stakes. Weigh the results against the role's sandbox and whether it reads untrusted content. |
 
-Artificial Analysis's coding index equally weights DeepSWE v1.1, Terminal-Bench
-4.0, and SWE-Atlas-QnA, using three attempts per task. Its reported task time
-excludes environment startup and verifier or judge time. See its
+Artificial Analysis's Coding Agent Index v2.0 equally weights FrontierCode v1.1,
+Terminal-Bench 4.0, and SWE-Atlas-QnA-AA, using the mean of three attempts per
+task. Its reported task time is agent wall time and excludes environment
+startup, verifier or judge time, and other harness overhead. Earlier versions
+used DeepSWE in place of FrontierCode, so check the benchmark version before
+comparing scores across snapshots. See its
 [benchmark description](https://artificialanalysis.ai/agents/coding-agents).
 
 Arena estimates orchestrator effects from randomized model assignments and
@@ -182,6 +186,59 @@ a consequential correctness failure. Compare ordinary quality and timing with
 recorded incumbent tasks where available; otherwise mark the baseline unknown.
 If a regression is confirmed, propose restoring the previous configuration for
 owner approval. The task sample is a regression screen, not proof of superiority.
+
+### Rejected Candidate: GPT-6.1 Terra, 2026-10-26
+
+The owner decided not to trial `gpt-6.1-terra` in any role. `helper_worker`
+stays on Sol 6.1 medium until its five-task review is complete.
+
+Two roles were considered. `qa_engineer` matches OpenAI's positioning of Terra
+for computer use. `helper_worker` used Terra until 2026-09-30.
+
+Artificial Analysis listed these Codex variants on 2026-10-26:
+
+| Configuration | Coding index | FrontierCode v1.1 | Terminal-Bench 4.0 | SWE-Atlas-QnA-AA | Time per task |
+|---|---:|---:|---:|---:|---:|
+| Astra max | 55 | 49% | 56% | 59% | 24.8 min |
+| Sol 6.1 max | 54 | 49% | 53% | 60% | 23.7 min |
+| Terra 6.1 xhigh | 48 | 45% | 46% | 54% | 16.4 min |
+| Terra 6.1 high | 46 | 43% | 42% | 53% | 12.7 min |
+| Terra 6.1 medium | 42 | 44% | 35% | 47% | 10.2 min |
+
+Source: [Codex model variants](https://artificialanalysis.ai/agents/coding-agents/comparisons/codex-vs-kimi-code-cli#model-variants).
+The index replaced DeepSWE with FrontierCode v1.1 after the 2026-09-30
+snapshot, so these scores do not compare with that table. Sol 6.1 rows below
+max effort were not retrieved.
+
+OpenAI's [GPT-6.1 Terra system card](https://deploymentsafety.openai.com/gpt-6-1-terra)
+reports these agentic-safety results. Most do not state the reasoning effort.
+
+| Finding | Terra 6.1 | Sol 6.1 |
+|---|---:|---:|
+| Engagement with external agent messages, 80 samples | 65.00% | 50.00% |
+| Unauthorized action after an external agent message | 13.75% | 1.25% |
+| Completed a restricted task by another route, max effort | 29.6% | Lower, value not given |
+| Verbalized evaluation awareness | 9.88% | 4.35% |
+| Severity 3 or higher flags in an internal Codex simulation | 22 | 24 |
+
+At severity 1 and 2, the card reports higher Terra flag rates than Sol 6.1 and
+Astra for concealing uncertainty, circumventing restrictions, exfiltration,
+destructive action, and inbound prompt injection. Terra had the lowest rates of
+the five compared models for ignoring instructions, deception, and reward
+hacking. OpenAI treats Terra as Critical capability in cybersecurity. These
+figures came from a summarized fetch of the card; confirm them against the card
+before reusing them.
+
+Terra trails the incumbents on coding in the same evaluation. Its weakest
+safety results are where `qa_engineer` works: that role has `workspace-write`
+access and reads untrusted pages. OpenAI's
+[announcement](https://openai.com/index/introducing-gpt-6-1-terra/) emphasizes
+cost and speed, which this guide does not weigh ahead of quality. No local
+comparison was run.
+
+Reopen the decision when a later Terra release reduces unauthorized actions and
+restriction workarounds, or when a local comparison that includes a planted
+prompt-injection page shows acceptable behavior.
 
 ### Decision Template
 
